@@ -1,0 +1,39 @@
+{
+"compilerOptions": {
+"incremental": true,
+"target": "ESNext",
+"module": "NodeNext",
+"removeComments": true,
+"moduleResolution": "NodeNext",
+"types": [
+  "node",
+  "express",
+  "multer"
+],
+"resolveJsonModule": true,
+"noEmit": false,
+"outDir": "dist",
+"rootDir": "server",
+"isolatedModules": true,
+"experimentalDecorators": true,         // NECESARIO para TypeORM y validadores
+"allowSyntheticDefaultImports": true,
+"esModuleInterop": true,
+"skipLibCheck": true,
+"forceConsistentCasingInFileNames": true,
+"strict": true,
+"strictPropertyInitialization": true
+  },
+  "include": [
+    "server/**/*.ts",
+    "server/@types/**/*.d.ts", "server/Shared/Swagger/schemas/tools/generateSchema.ts", "tests/helpers/serverAuth.help.ts", "tests/integration/auth.integration.test.ts",
+      
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "data", 
+    "tests",
+    "**/*.test.ts",
+    "**/*.help.ts"
+  ]
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Restablece tu contraseña</title>
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .header {
+      background-color: #4a7a4a;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    .content {
+      padding: 30px;
+      color: #333;
+    }
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4a7a4a;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      padding: 20px;
+    }
+  </style>
+  </head>
+  <body>
+    <div class="container">
+    <div class="header">
+      <img src="https://res.cloudinary.com/dt1lpgumr/image/upload/v1778266328/4734a64a0e99cc7aeb9e4da313fca81e.png" alt="Logo Nomades" width="120" style="display: block; margin: 0 auto 15px auto;">
+      <h1>Nomades-cabañas de pastores</h1>
+      <h2>Reestablecimiento de contraseña</h2>
+    </div>
+    <div class="content">
+      <h2>Hola {{user_name}},</h2>
+      <p>Tu contraseña ha sido restablecida correctamente.</p>
+      <p>Una vez que inicies sesión te recomendamos que la cambies:</p>
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #344634;">
+        <p style="margin: 0;">Tu nueva contraseña temporal de acceso es:</p>
+        <h3 style="margin: 10px 0 0 0; color: #4a7a4a;">{{new_password}}</h3>
+      </div>
+      <p>No pierdas este email hasta haber cambiado tu contraseña.</p>
+    </div>
+      <div class="footer">
+      &copy; 2026 Nomades: cabañas de pastores
+    </div>
+    </div>
+  </body>
+</html>
