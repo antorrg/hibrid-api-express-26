@@ -1,7 +1,7 @@
 import { UserRepository } from '../features/user/UserRepository.js'
 import { UserService } from '../features/user/UserService.js'
 import { imageService } from './externals/images/ImageService.js'
-import { Image, Client, ApiKey, Letter, Product, VariantProduct } from '../configs/database.js'
+import { Image, Client, ApiKey, Letter, Product, VariantProduct, FrontPage } from '../configs/database.js'
 import { ImageDbRepository } from '../features/images/ImageDbRepository.js'
 import { ImageDbService } from '../features/images/ImageDbService.js'
 import { ApiKeyRepository } from '../features/apiKey/ApiKeyRepository.js'
@@ -12,6 +12,9 @@ import { LetterService } from '../features/cartas/LetterService.js'
 import { emailService } from './externals/EmailService/EmailService.js'
 import { ProductRepository } from '../features/product/ProductRepository.js'
 import { ProductService } from '../features/product/ProductService.js'
+import { BaseRepository } from './repositories/BaseRepository.js'
+import { FrontPageService } from '../features/frontPage/FrontPageService.js'
+import { frontPageParser, type IFrontPage, type IFrotnUpdate } from '../features/frontPage/FrontPage.types.js'
 
 const imgrepo = new ImageDbRepository(Image)
 export const imageDbService = new ImageDbService(imgrepo, imageService.deleteOldImage)
@@ -27,4 +30,12 @@ export const letterRepository = new LetterRepository(Letter)
 export const letterService = new LetterService(letterRepository, emailService.sendEmail.bind(emailService))
 
 export const productRepository = new ProductRepository(Product, VariantProduct)
-export const productService = new ProductService(productRepository, imageDbService, imageService.deleteOldImage)
+export const productService = new ProductService(productRepository, imageDbService)
+
+export const frontPageRepository = new BaseRepository<IFrontPage, any, IFrotnUpdate>(
+  FrontPage,
+  frontPageParser,
+  frontPageParser,
+  'FrontPage'
+)
+export const frontPageService = new FrontPageService(frontPageRepository, imageDbService)

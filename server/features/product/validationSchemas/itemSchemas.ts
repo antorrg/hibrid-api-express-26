@@ -17,10 +17,6 @@ export const itemCreate: Schema = {
   productId: {
     type: 'string',
     optional: true
-  },
-  ProductId: {
-    type: 'string',
-    optional: true
   }
 }
 

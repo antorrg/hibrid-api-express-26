@@ -3,10 +3,16 @@ import type {
   IProduct,
   IProductSummary,
   IVariantProduct,
+  IProductPublicSummary,
+  IProductPublicDetail,
+  IVariantPublic,
+  IVariantSinglePublic,
   CreateProductDTO,
   UpdateProductDTO,
   CreateVariantDTO,
   UpdateVariantDTO,
+  ProductCreationAttributes,
+  VariantCreationAttributes,
   IProductRepository
 } from './Product.types.js'
 
@@ -14,12 +20,19 @@ export type {
   IProduct,
   IProductSummary,
   IVariantProduct,
+  IProductPublicSummary,
+  IProductPublicDetail,
+  IVariantPublic,
+  IVariantSinglePublic,
   CreateProductDTO,
   UpdateProductDTO,
   CreateVariantDTO,
   UpdateVariantDTO,
+  ProductCreationAttributes,
+  VariantCreationAttributes,
   IProductRepository
 }
+
 
 // Aliases for compatibility
 export type IVariant = IVariantProduct
@@ -34,7 +47,7 @@ export type ProductsResponse = IProductSummary
 
 type Parseable<T> = T | Model
 
-interface RawVariant {
+export interface RawVariant {
   id: string
   productId?: string
   ProductId?: string
@@ -45,7 +58,9 @@ interface RawVariant {
   updatedAt?: Date
 }
 
-interface RawProduct {
+export type RawVariantPublic = Omit<RawVariant, 'enabled' | 'createdAt' | 'updatedAt'>
+
+export interface RawProduct {
   id: string
   title: string
   picture: string
@@ -56,7 +71,6 @@ interface RawProduct {
   url?: string
   enabled?: boolean
   variants?: RawVariant[]
-  Variants?: RawVariant[]
   createdAt?: Date
   updatedAt?: Date
 }
@@ -88,12 +102,33 @@ export class VariantParser {
       updatedAt: raw.updatedAt
     }
   }
+
+  static toPublicDTO(rawInput: Parseable<RawVariant>): IVariantPublic {
+    const raw = toRaw<RawVariant>(rawInput)
+    return {
+      id: raw.id,
+      productId: raw.productId ?? raw.ProductId ?? '',
+      picture: raw.picture,
+      text: raw.text
+    }
+  }
+
+  static toPublicSingleDTO(rawInput: Parseable<RawVariant>): IVariantSinglePublic {
+    const raw = toRaw<RawVariant>(rawInput)
+    return {
+      id: raw.id,
+      productId: raw.productId ?? raw.ProductId ?? '',
+      text: raw.text,
+      picture: raw.picture
+    }
+  }
 }
+
 
 export class ProductParser {
   static toDetailDTO(rawInput: Parseable<RawProduct>): IProduct {
     const raw = toRaw<RawProduct>(rawInput)
-    const variantsRaw = raw.variants || raw.Variants || []
+    const variantsRaw = raw.variants || []
     return {
       id: raw.id,
       title: raw.title,
@@ -126,4 +161,35 @@ export class ProductParser {
       updatedAt: raw.updatedAt
     }
   }
+
+  static toPublicSummaryDTO(rawInput: Parseable<RawProduct>): IProductPublicSummary {
+    const raw = toRaw<RawProduct>(rawInput)
+    return {
+      id: raw.id,
+      title: raw.title,
+      logo: raw.logo,
+      picture: raw.picture,
+      url: raw.url ?? 'NoUrl',
+      isAlive: Boolean(raw.isAlive),
+      info_header: raw.info_header,
+      info_body: raw.info_body ?? null
+    }
+  }
+
+  static toPublicDetailDTO(rawInput: Parseable<RawProduct>, rawVariants?: Parseable<RawVariant>[]): IProductPublicDetail {
+    const raw = toRaw<RawProduct>(rawInput)
+    const variantsRaw = rawVariants ?? raw.variants ?? []
+    return {
+      id: raw.id,
+      title: raw.title,
+      logo: raw.logo,
+      picture: raw.picture,
+      url: raw.url ?? 'NoUrl',
+      isAlive: Boolean(raw.isAlive),
+      info_header: raw.info_header,
+      info_body: raw.info_body ?? null,
+      variants: Array.isArray(variantsRaw) ? variantsRaw.map(v => VariantParser.toPublicDTO(v)) : []
+    }
+  }
 }
+

@@ -1,17 +1,22 @@
+import { QueryTypes } from 'sequelize'
 import { Product as ProductDbModel, VariantProduct as VariantProductDbModel, sequelize } from '../../configs/database.js'
 import { throwError, ERROR_CODE } from '../../configs/errors.js'
-import { UuidHandler } from '../../shared/utils/UuidHandler.js'
 import { ProductParser, VariantParser } from './ProductMappers.js'
+import type { RawProduct, RawVariant } from './ProductMappers.js'
 import type {
   IProduct,
   IProductSummary,
   IVariantProduct,
-  CreateProductDTO,
+  IProductPublicSummary,
+  IProductPublicDetail,
+  IVariantSinglePublic,
+  ProductCreationAttributes,
+  VariantCreationAttributes,
   UpdateProductDTO,
-  CreateVariantDTO,
   UpdateVariantDTO,
   IProductRepository
 } from './Product.types.js'
+
 
 export class ProductRepository implements IProductRepository {
   constructor(
@@ -26,12 +31,16 @@ export class ProductRepository implements IProductRepository {
     return products.map(p => ProductParser.toSummaryDTO(p))
   }
 
-  async getPublicProducts(): Promise<IProductSummary[]> {
-    const products = await this.productModel.findAll({
-      where: { enabled: true },
-      order: [['createdAt', 'DESC']]
+  async getPublicProducts(): Promise<IProductPublicSummary[]> {
+    const products = await sequelize.query<RawProduct>(`
+      SELECT id, title, logo, picture, url, "isAlive", info_header, info_body
+      FROM "${this.productModel.tableName}"
+      WHERE enabled = true
+      ORDER BY "createdAt" DESC
+    `, {
+      type: QueryTypes.SELECT
     })
-    return products.map(p => ProductParser.toSummaryDTO(p))
+    return products.map(p => ProductParser.toPublicSummaryDTO(p))
   }
 
   async getProductById(id: string): Promise<IProduct> {
@@ -44,54 +53,48 @@ export class ProductRepository implements IProductRepository {
     return ProductParser.toDetailDTO(product)
   }
 
-  async getPublicProductById(id: string): Promise<IProduct> {
-    const product = await this.productModel.findOne({
-      where: { id, enabled: true },
-      include: [
-        {
-          model: this.variantModel,
-          as: 'variants',
-          where: { enabled: true },
-          required: false
-        }
-      ]
+  async getPublicProductById(id: string): Promise<IProductPublicDetail> {
+    const products = await sequelize.query<RawProduct>(`
+      SELECT id, title, logo, picture, url, "isAlive", info_header, info_body
+      FROM "${this.productModel.tableName}"
+      WHERE enabled = true
+      AND id = :id
+      LIMIT 1
+    `, {
+      replacements: { id },
+      type: QueryTypes.SELECT
     })
-    if (!product) {
+
+    if (!products || products.length === 0) {
       throwError(ERROR_CODE.NOT_FOUND, `Producto con ID ${id} no encontrado`)
     }
-    return ProductParser.toDetailDTO(product)
+
+    const variants = await sequelize.query<RawVariant>(`
+      SELECT id, "productId", picture, text
+      FROM "${this.variantModel.tableName}"
+      WHERE enabled = true
+      AND "productId" = :id
+      ORDER BY "createdAt" ASC
+    `, {
+      replacements: { id },
+      type: QueryTypes.SELECT
+    })
+
+    return ProductParser.toPublicDetailDTO(products[0], variants)
   }
 
-  async createProduct(data: CreateProductDTO): Promise<IProduct> {
+  async createProduct(data: ProductCreationAttributes): Promise<IProduct> {
     const t = await sequelize.transaction()
     try {
-      const productId = UuidHandler.createUuid()
       const product = await this.productModel.create(
-        {
-          id: productId,
-          title: data.title,
-          picture: data.picture,
-          logo: data.logo,
-          info_header: data.info_header,
-          info_body: data.info_body ?? null,
-          isAlive: data.isAlive ?? false,
-          url: data.url ?? 'NoUrl',
-          enabled: true
-        } as any,
-        { transaction: t }
+       data as any, 
+       { transaction: t }
       )
 
-      const variantsList = data.variants ?? data.items ?? []
-      if (variantsList.length > 0) {
-        for (const variant of variantsList) {
+      if (data.variants && data.variants.length > 0) {
+        for (const variant of data.variants) {
           await this.variantModel.create(
-            {
-              id: UuidHandler.createUuid(),
-              productId,
-              picture: variant.picture,
-              text: variant.text,
-              enabled: true
-            } as any,
+            variant as any,
             { transaction: t }
           )
         }
@@ -142,18 +145,28 @@ export class ProductRepository implements IProductRepository {
     return VariantParser.toDTO(variant)
   }
 
-  async getPublicVariantById(id: string): Promise<IVariantProduct> {
-    const variant = await this.variantModel.findOne({
-      where: { id, enabled: true }
+  async getPublicVariantById(id: string): Promise<IVariantSinglePublic> {
+    const variants = await sequelize.query<RawVariant>(`
+      SELECT id, "productId", text, picture
+      FROM "${this.variantModel.tableName}"
+      WHERE enabled = true
+      AND id = :id
+      LIMIT 1
+    `, {
+
+      replacements: { id },
+      type: QueryTypes.SELECT
     })
-    if (!variant) {
+
+    if (!variants || variants.length === 0) {
       throwError(ERROR_CODE.NOT_FOUND, `Variante con ID ${id} no encontrada`)
     }
-    return VariantParser.toDTO(variant)
+
+    return VariantParser.toPublicSingleDTO(variants[0])
   }
 
-  async createVariant(data: CreateVariantDTO): Promise<IVariantProduct> {
-    const productId = data.productId ?? data.ProductId
+  async createVariant(data: VariantCreationAttributes): Promise<IVariantProduct> {
+    const productId = data.productId
     if (!productId) {
       throwError(ERROR_CODE.REQUIRED_FIELD_MISSING, 'productId es requerido')
     }
@@ -163,13 +176,7 @@ export class ProductRepository implements IProductRepository {
       throwError(ERROR_CODE.NOT_FOUND, `Producto con ID ${productId} no encontrado`)
     }
 
-    const variant = await this.variantModel.create({
-      id: UuidHandler.createUuid(),
-      productId,
-      picture: data.picture,
-      text: data.text,
-      enabled: true
-    } as any)
+    const variant = await this.variantModel.create(data as any)
 
     return VariantParser.toDTO(variant)
   }

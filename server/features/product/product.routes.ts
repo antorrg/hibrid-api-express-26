@@ -19,13 +19,13 @@ productRouter.get('/public/item/:id', Validator.paramId('id', UuidHandler.uuidRe
 // --- Rutas de Productos ---
 productRouter.get(
   '/',
-  isAuthenticated,
+  //isAuthenticated,
   controller.getAll
 )
 
 productRouter.get(
   '/:id',
-  isAuthenticated,
+  //isAuthenticated,
   Validator.paramId('id', UuidHandler.uuidRegex),
   controller.getById
 )

@@ -2,29 +2,32 @@ import type {
   IProduct,
   IProductSummary,
   IVariantProduct,
+  IProductPublicSummary,
+  IProductPublicDetail,
+  IVariantSinglePublic,
   CreateProductDTO,
   UpdateProductDTO,
   CreateVariantDTO,
   UpdateVariantDTO,
+  ProductCreationAttributes,
+  VariantCreationAttributes,
   IProductRepository
 } from './Product.types.js'
 import type { ImageDbService } from '../images/ImageDbService.js'
+import { UuidHandler } from '../../shared/utils/UuidHandler.js'
 import logger from '../../configs/logger.js'
-
-export type ImageDeleteFn = (imageUrl: string) => Promise<unknown>
 
 export class ProductService {
   constructor(
     private readonly repository: IProductRepository,
-    private readonly imageDbService: ImageDbService,
-    private readonly deleteOldImage: ImageDeleteFn
+    private readonly imageDbService: ImageDbService
   ) {}
 
   async getAll(): Promise<IProductSummary[]> {
     return await this.repository.getAllProducts()
   }
 
-  async getPublicAll(): Promise<IProductSummary[]> {
+  async getPublicAll(): Promise<IProductPublicSummary[]> {
     return await this.repository.getPublicProducts()
   }
 
@@ -32,12 +35,36 @@ export class ProductService {
     return await this.repository.getProductById(id)
   }
 
-  async getPublicById(id: string): Promise<IProduct> {
+  async getPublicById(id: string): Promise<IProductPublicDetail> {
     return await this.repository.getPublicProductById(id)
   }
 
   async create(data: CreateProductDTO): Promise<IProduct> {
-    const created = await this.repository.createProduct(data)
+    const productId = UuidHandler.createUuid()
+    const variantsRaw = data.variants ?? data.items ?? []
+
+    const variantsPayload: VariantCreationAttributes[] = variantsRaw.map(v => ({
+      id: UuidHandler.createUuid(),
+      productId,
+      picture: v.picture,
+      text: v.text,
+      enabled: true
+    }))
+
+    const productPayload: ProductCreationAttributes = {
+      id: productId,
+      title: data.title,
+      picture: data.picture,
+      logo: data.logo,
+      info_header: data.info_header,
+      info_body: data.info_body ?? null,
+      isAlive: data.isAlive ?? false,
+      url: data.url ?? 'NoUrl',
+      enabled: true,
+      variants: variantsPayload
+    }
+
+    const created = await this.repository.createProduct(productPayload)
 
     // Al ingresar imágenes (ya existen en storage y db), se consumen borrándolas de la DB
     const imagesToConsume = [
@@ -48,7 +75,7 @@ export class ProductService {
 
     if (imagesToConsume.length > 0) {
       const results = await Promise.allSettled(
-        imagesToConsume.map(url => this.consumeImage(url))
+        imagesToConsume.map(url => this.imageDbService.consumeImage(url))
       )
       results.forEach((res, i) => {
         if (res.status === 'rejected') {
@@ -74,11 +101,11 @@ export class ProductService {
     const replaceTasks: Promise<void>[] = []
 
     if (data.picture && data.picture !== oldPicture) {
-      replaceTasks.push(this.handleReplacedImage(oldPicture, data.picture, isSaver))
+      replaceTasks.push(this.imageDbService.handleReplacedImage(oldPicture, data.picture, isSaver))
     }
 
     if (data.logo && data.logo !== oldLogo) {
-      replaceTasks.push(this.handleReplacedImage(oldLogo, data.logo, isSaver))
+      replaceTasks.push(this.imageDbService.handleReplacedImage(oldLogo, data.logo, isSaver))
     }
 
     if (replaceTasks.length > 0) {
@@ -109,7 +136,7 @@ export class ProductService {
     const isSaver = saver === true || String(saver) === 'true'
     if (imagesToDelete.length > 0) {
       const results = await Promise.allSettled(
-        imagesToDelete.map(url => this.handleDeletedImage(url, isSaver))
+        imagesToDelete.map(url => this.imageDbService.handleDeletedImage(url, isSaver))
       )
       results.forEach((res, i) => {
         if (res.status === 'rejected') {
@@ -125,14 +152,22 @@ export class ProductService {
     return await this.repository.getVariantById(id)
   }
 
-  async getPublicVariant(id: string): Promise<IVariantProduct> {
+  async getPublicVariant(id: string): Promise<IVariantSinglePublic> {
     return await this.repository.getPublicVariantById(id)
   }
 
   async createVariant(data: CreateVariantDTO): Promise<IVariantProduct> {
-    const created = await this.repository.createVariant(data)
+    const variantPayload: VariantCreationAttributes = {
+      id: UuidHandler.createUuid(),
+      productId: data.productId,
+      picture: data.picture,
+      text: data.text,
+      enabled: true
+    }
+
+    const created = await this.repository.createVariant(variantPayload)
     if (data.picture) {
-      const [res] = await Promise.allSettled([this.consumeImage(data.picture)])
+      const [res] = await Promise.allSettled([this.imageDbService.consumeImage(data.picture)])
       if (res.status === 'rejected') {
         logger.warn(`[ProductService.createVariant] Error consumiendo imagen "${data.picture}": ${res.reason}`)
       }
@@ -149,7 +184,7 @@ export class ProductService {
     const isSaver = data.saver === true || String(data.saver) === 'true'
     if (data.picture && data.picture !== oldPicture) {
       const [res] = await Promise.allSettled([
-        this.handleReplacedImage(oldPicture, data.picture, isSaver)
+        this.imageDbService.handleReplacedImage(oldPicture, data.picture, isSaver)
       ])
       if (res.status === 'rejected') {
         logger.error(`[ProductService.updateVariant] Error reemplazando imagen de variante: ${res.reason}`)
@@ -167,7 +202,7 @@ export class ProductService {
     const isSaver = saver === true || String(saver) === 'true'
     if (pictureToDelete) {
       const [res] = await Promise.allSettled([
-        this.handleDeletedImage(pictureToDelete, isSaver)
+        this.imageDbService.handleDeletedImage(pictureToDelete, isSaver)
       ])
       if (res.status === 'rejected') {
         logger.error(`[ProductService.deleteVariant] Error procesando imagen de variante "${pictureToDelete}" (saver=${isSaver}): ${res.reason}`)
@@ -176,38 +211,5 @@ export class ProductService {
 
     return message
   }
-
-  // --- Helpers de gestión de imágenes ---
-
-  private async consumeImage(url?: string | null): Promise<void> {
-    if (!url) return
-    await this.imageDbService.internalRemove(url)
-  }
-
-  private async handleReplacedImage(oldUrl?: string | null, newUrl?: string | null, saver?: boolean): Promise<void> {
-    if (!newUrl || newUrl === oldUrl) return
-
-    // Se consume la nueva imagen eliminándola de la DB (galería temporal)
-    await this.consumeImage(newUrl)
-
-    if (!oldUrl) return
-
-    // Si saver es true, la imagen vieja se preserva en la galería de la DB
-    // Si saver es false, la imagen vieja se elimina físicamente de Firebase / Storage
-    if (saver === true) {
-      await this.imageDbService.save(oldUrl)
-    } else {
-      await this.deleteOldImage(oldUrl)
-    }
-  }
-
-  private async handleDeletedImage(url?: string | null, saver?: boolean): Promise<void> {
-    if (!url) return
-
-    if (saver === true) {
-      await this.imageDbService.save(url)
-    } else {
-      await this.deleteOldImage(url)
-    }
-  }
 }
+

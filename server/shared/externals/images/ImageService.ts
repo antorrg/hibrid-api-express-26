@@ -35,5 +35,6 @@ export class ImageService{
     }
     return await this.deleteImage(imageUrl)
   }
+
 }
 export const imageService = new ImageService(uploadImage, deleteImage)

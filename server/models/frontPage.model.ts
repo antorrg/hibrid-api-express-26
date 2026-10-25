@@ -7,7 +7,7 @@ import type {
 } from 'sequelize'
 
 export class FrontPage extends Model<InferAttributes<FrontPage>, InferCreationAttributes<FrontPage>>{
-  declare id: CreationOptional<number>
+  declare id:string
   declare picture: string
   declare title: string
   declare info_header: string
@@ -19,9 +19,8 @@ export default (sequelize: Sequelize) => {
   FrontPage.init(
     {
       id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+        type: DataTypes.UUID,
+        primaryKey: true
       },
       picture: {
         type: DataTypes.STRING,
