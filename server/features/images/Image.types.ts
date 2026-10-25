@@ -30,7 +30,7 @@ export interface IImageRepository {
 
 export type ImageDeleteFn = (imageUrl: string) => Promise<unknown>
 
-export interface IImageDbService {
+export interface IImageService {
   save(imageUrl: string): Promise<void>
   getWithPages(query: ImageQueries): Promise<PagesResult>
   getImage(id: string): Promise<IImage>
@@ -39,3 +39,4 @@ export interface IImageDbService {
   handleReplacedImage(oldUrl?: string | null, newUrl?: string | null, saver?: boolean | string): Promise<void>
   handleDeletedImage(url?: string | null, saver?: boolean | string): Promise<void>
 }
+export type IImageDbService = IImageService

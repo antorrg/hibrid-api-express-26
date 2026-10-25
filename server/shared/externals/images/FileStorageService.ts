@@ -8,21 +8,21 @@ const uploadImage = envConfig.Status === 'production'? uploadImageToFirebase : M
 const deleteImage = envConfig.Status === 'production'? deleteImageFromStorage : MockImageService.deleteImage
 
 
-export class ImageService{
-  protected uploadImage: (file: UploadedImageFile)=>Promise<string | undefined>
-  protected deleteImage: (url: string)=>Promise<string| undefined>
+export class FileStorageService {
+  protected uploadImage: (file: UploadedImageFile) => Promise<string | undefined>
+  protected deleteImage: (url: string) => Promise<string | undefined>
   constructor(
-    uploadImage: (file: UploadedImageFile)=>Promise<string | undefined>, 
-    deleteImage: (url: string)=>Promise<string | undefined>
-  ){
+    uploadImage: (file: UploadedImageFile) => Promise<string | undefined>, 
+    deleteImage: (url: string) => Promise<string | undefined>
+  ) {
     this.uploadImage = uploadImage
     this.deleteImage = deleteImage
   }
   #whiteList = [`${envConfig.UserImg}`]
 
-  uploadNewImage = async(file:UploadedImageFile) => {
+  uploadNewImage = async(file: UploadedImageFile) => {
     const exceptImage = this.#whiteList.includes(file.originalname)
-    if(exceptImage){
+    if (exceptImage) {
       throwError(ERROR_CODE.DATA_CONFLICT, 'La imagen ya existe')
     }
     return await this.uploadImage(file)
@@ -30,11 +30,11 @@ export class ImageService{
 
   deleteOldImage = async(imageUrl: string) => {
     const exceptImage = this.#whiteList.includes(imageUrl)
-    if(exceptImage){
+    if (exceptImage) {
       return `La imagen "${imageUrl}" no se puede eliminar`
     }
     return await this.deleteImage(imageUrl)
   }
-
 }
-export const imageService = new ImageService(uploadImage, deleteImage)
+
+export const fileStorageService = new FileStorageService(uploadImage, deleteImage)

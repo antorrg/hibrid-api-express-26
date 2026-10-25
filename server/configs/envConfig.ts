@@ -33,7 +33,7 @@ const envConfig = {
   AdminUserEmail: getStringEnv('ADMIN_EMAIL'),
   AdminUserName: getStringEnv('ADMIN_NAME'),
   AdminUserPass: getStringEnv('ADMIN_PASS'),
-  // ImageService
+  // FileStorageService
   BaseTestUrl: getStringEnv('BASE_TEST_URL'),
   //Firebase service:
   FireApiK:getStringEnv('API_KEY'),

@@ -4,7 +4,7 @@ import { Image } from '../../configs/database.js'
 import type { IImage, IImageRepository, ImageQueries, PagesResult } from './Image.types.js'
 import type { Image as ImageDb } from '../../models/images.model.js'
 
-export class ImageDbRepository implements IImageRepository {
+export class ImageRepository implements IImageRepository {
   private base: BaseRepository<IImage, IImage, Partial<IImage>, ImageDb>
   private Model: typeof ImageDb
 

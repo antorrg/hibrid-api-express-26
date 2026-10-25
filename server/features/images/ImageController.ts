@@ -2,7 +2,7 @@ import type { Request, Response } from 'express'
 import multer from 'multer'
 import { responder } from '../../shared/utils/responder.js'
 import type { UploadedImageFile } from '../../shared/interfaces/base.interface.js'
-import type { ImageDbService } from './ImageDbService.js'
+import type { ImageService } from './ImageService.js'
 import type { ImageQueries } from './Image.types.js'
 import { ERROR_CODE, throwError } from '../../configs/errors.js'
 
@@ -18,15 +18,15 @@ export const uploadImage = multer({
 })
 
 export class ImageController {
-  private readonly imageService: (file: UploadedImageFile) => Promise<string | undefined>
-  private readonly imageDbService: ImageDbService
+  private readonly fileUploader: (file: UploadedImageFile) => Promise<string | undefined>
+  private readonly imageService: ImageService
 
   constructor(
-    imageService: (file: UploadedImageFile) => Promise<string | undefined>,
-    imageDbService: ImageDbService
+    fileUploader: (file: UploadedImageFile) => Promise<string | undefined>,
+    imageService: ImageService
   ) {
+    this.fileUploader = fileUploader
     this.imageService = imageService
-    this.imageDbService = imageDbService
   }
 
   uploader = async(req: Request, res: Response) => {
@@ -34,23 +34,23 @@ export class ImageController {
     if (!file) {
       throwError(ERROR_CODE.FILE_REQUIRED, 'No hay Imagen')
     }
-    const result = await this.imageService(file!)
+    const result = await this.fileUploader(file!)
     if (!result) {
       throwError(ERROR_CODE.OPERATION_FAILED, 'Fallo subida de imagen')
     }
-    await this.imageDbService.save(result)
+    await this.imageService.save(result)
     return responder(res, 201, result)
   }
 
   getImages = async(req: Request, res: Response) => {
     const queries = (req.context?.query ?? req.query) as ImageQueries
-    const result = await this.imageDbService.getWithPages(queries)
+    const result = await this.imageService.getWithPages(queries)
     return responder(res, 200, result)
   }
 
   deleteImage = async(req: Request, res: Response) => {
     const { id } = req.params
-    const result = await this.imageDbService.remove(id as string)
+    const result = await this.imageService.remove(id as string)
     return responder(res, 200, result)
   }
 }

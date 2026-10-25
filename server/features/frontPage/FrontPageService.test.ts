@@ -2,12 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { FrontPageService } from './FrontPageService.js'
 import { FrontPageController } from './FrontPageController.js'
 import type { BaseRepository } from '../../shared/repositories/BaseRepository.js'
-import type { ImageDbService } from '../images/ImageDbService.js'
+import type { ImageService } from '../images/ImageService.js'
 import type { IFrontPage, IFrontCreate, IFrotnUpdate } from './FrontPage.types.js'
 
 describe('FrontPageService & FrontPageController Unit Tests', () => {
   let mockRepository: Partial<BaseRepository<IFrontPage, any, IFrotnUpdate>>
-  let mockImageDbService: Partial<ImageDbService>
+  let mockImageService: Partial<ImageService>
   let service: FrontPageService
   let controller: FrontPageController
 
@@ -27,14 +27,14 @@ describe('FrontPageService & FrontPageController Unit Tests', () => {
       update: vi.fn().mockResolvedValue({ ...fakeFrontPage, title: 'Updated Title' })
     }
 
-    mockImageDbService = {
+    mockImageService = {
       consumeImage: vi.fn().mockResolvedValue(undefined),
       handleReplacedImage: vi.fn().mockResolvedValue(undefined)
     }
 
     service = new FrontPageService(
       mockRepository as BaseRepository<IFrontPage, any, IFrotnUpdate>,
-      mockImageDbService as ImageDbService
+      mockImageService as ImageService
     )
 
     controller = new FrontPageController(service)
@@ -72,7 +72,7 @@ describe('FrontPageService & FrontPageController Unit Tests', () => {
       expect(passedData.title).toBe(createData.title)
       expect(passedData.enabled).toBe(true)
 
-      expect(mockImageDbService.consumeImage).toHaveBeenCalledWith(createData.picture)
+      expect(mockImageService.consumeImage).toHaveBeenCalledWith(createData.picture)
     })
 
     it('update() should update record and handle replaced image when picture changed', async() => {
@@ -88,7 +88,7 @@ describe('FrontPageService & FrontPageController Unit Tests', () => {
         title: 'Updated Title',
         picture: 'https://storage.googleapis.com/test-bucket/replaced.jpg'
       })
-      expect(mockImageDbService.handleReplacedImage).toHaveBeenCalledWith(
+      expect(mockImageService.handleReplacedImage).toHaveBeenCalledWith(
         fakeFrontPage.picture,
         updateData.picture,
         true

@@ -1,12 +1,12 @@
 import express from 'express'
-import { imageService } from '../../shared/externals/images/ImageService.js'
-import { imageDbService } from '../../shared/dependencies.js'
+import { fileStorageService } from '../../shared/externals/images/FileStorageService.js'
+import { imageService } from '../../shared/dependencies.js'
 import { ImageController, uploadImage } from './ImageController.js'
 import { Validator } from 'req-valid-express'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
 import { imageQuery } from './validationSchemas.js'
 
-const imageController = new ImageController(imageService.uploadNewImage, imageDbService)
+const imageController = new ImageController(fileStorageService.uploadNewImage, imageService)
 
 const imageRouter = express.Router()
 

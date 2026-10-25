@@ -13,14 +13,14 @@ import type {
   VariantCreationAttributes,
   IProductRepository
 } from './Product.types.js'
-import type { ImageDbService } from '../images/ImageDbService.js'
+import type { ImageService } from '../images/ImageService.js'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
 import logger from '../../configs/logger.js'
 
 export class ProductService {
   constructor(
     private readonly repository: IProductRepository,
-    private readonly imageDbService: ImageDbService
+    private readonly imageService: ImageService
   ) {}
 
   async getAll(): Promise<IProductSummary[]> {
@@ -75,7 +75,7 @@ export class ProductService {
 
     if (imagesToConsume.length > 0) {
       const results = await Promise.allSettled(
-        imagesToConsume.map(url => this.imageDbService.consumeImage(url))
+        imagesToConsume.map(url => this.imageService.consumeImage(url))
       )
       results.forEach((res, i) => {
         if (res.status === 'rejected') {
@@ -101,11 +101,11 @@ export class ProductService {
     const replaceTasks: Promise<void>[] = []
 
     if (data.picture && data.picture !== oldPicture) {
-      replaceTasks.push(this.imageDbService.handleReplacedImage(oldPicture, data.picture, isSaver))
+      replaceTasks.push(this.imageService.handleReplacedImage(oldPicture, data.picture, isSaver))
     }
 
     if (data.logo && data.logo !== oldLogo) {
-      replaceTasks.push(this.imageDbService.handleReplacedImage(oldLogo, data.logo, isSaver))
+      replaceTasks.push(this.imageService.handleReplacedImage(oldLogo, data.logo, isSaver))
     }
 
     if (replaceTasks.length > 0) {
@@ -136,7 +136,7 @@ export class ProductService {
     const isSaver = saver === true || String(saver) === 'true'
     if (imagesToDelete.length > 0) {
       const results = await Promise.allSettled(
-        imagesToDelete.map(url => this.imageDbService.handleDeletedImage(url, isSaver))
+        imagesToDelete.map(url => this.imageService.handleDeletedImage(url, isSaver))
       )
       results.forEach((res, i) => {
         if (res.status === 'rejected') {
@@ -167,7 +167,7 @@ export class ProductService {
 
     const created = await this.repository.createVariant(variantPayload)
     if (data.picture) {
-      const [res] = await Promise.allSettled([this.imageDbService.consumeImage(data.picture)])
+      const [res] = await Promise.allSettled([this.imageService.consumeImage(data.picture)])
       if (res.status === 'rejected') {
         logger.warn(`[ProductService.createVariant] Error consumiendo imagen "${data.picture}": ${res.reason}`)
       }
@@ -184,7 +184,7 @@ export class ProductService {
     const isSaver = data.saver === true || String(data.saver) === 'true'
     if (data.picture && data.picture !== oldPicture) {
       const [res] = await Promise.allSettled([
-        this.imageDbService.handleReplacedImage(oldPicture, data.picture, isSaver)
+        this.imageService.handleReplacedImage(oldPicture, data.picture, isSaver)
       ])
       if (res.status === 'rejected') {
         logger.error(`[ProductService.updateVariant] Error reemplazando imagen de variante: ${res.reason}`)
@@ -202,7 +202,7 @@ export class ProductService {
     const isSaver = saver === true || String(saver) === 'true'
     if (pictureToDelete) {
       const [res] = await Promise.allSettled([
-        this.imageDbService.handleDeletedImage(pictureToDelete, isSaver)
+        this.imageService.handleDeletedImage(pictureToDelete, isSaver)
       ])
       if (res.status === 'rejected') {
         logger.error(`[ProductService.deleteVariant] Error procesando imagen de variante "${pictureToDelete}" (saver=${isSaver}): ${res.reason}`)

@@ -1,6 +1,6 @@
 import type { BaseRepository } from '../../shared/repositories/BaseRepository.js'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
-import type { ImageDbService } from '../images/ImageDbService.js'
+import type { ImageService } from '../images/ImageService.js'
 import {
   type IFrontCreate,
   type IFrotnUpdate,
@@ -12,14 +12,14 @@ import logger from '../../configs/logger.js'
 
 export class FrontPageService implements IFrontService {
   protected readonly Repository: BaseRepository<IFrontPage, any, IFrotnUpdate>
-  private readonly imageDbService: ImageDbService
+  private readonly imageService: ImageService
 
   constructor(
     Repository: BaseRepository<IFrontPage, any, IFrotnUpdate>,
-    imageDbService: ImageDbService
+    imageService: ImageService
   ) {
     this.Repository = Repository
-    this.imageDbService = imageDbService
+    this.imageService = imageService
   }
 
   async get(): Promise<IFrontPage> {
@@ -39,7 +39,7 @@ export class FrontPageService implements IFrontService {
     await this.Repository.create(newData)
 
     if (data.picture) {
-      await this.imageDbService.consumeImage(data.picture).catch(error => {
+      await this.imageService.consumeImage(data.picture).catch(error => {
         logger.warn(`[FrontPageService.create] Error consumiendo imagen: ${error}`)
       })
     }
@@ -56,7 +56,7 @@ export class FrontPageService implements IFrontService {
     const updated = await this.Repository.update(id, updateData)
 
     if (data.picture && data.picture !== oldPicture) {
-      await this.imageDbService.handleReplacedImage(oldPicture, data.picture, saver).catch(error => {
+      await this.imageService.handleReplacedImage(oldPicture, data.picture, saver).catch(error => {
         logger.warn(`[FrontPageService.update] Error al reemplazar imagen: ${error}`)
       })
     }

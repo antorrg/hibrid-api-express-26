@@ -8,11 +8,11 @@ import type {
   IProductPublicDetail,
   IVariantSinglePublic
 } from './Product.types.js'
-import type { ImageDbService } from '../images/ImageDbService.js'
+import type { ImageService } from '../images/ImageService.js'
 
 describe('ProductService', () => {
   let mockRepo: IProductRepository
-  let mockImageDbService: ImageDbService
+  let mockImageService: ImageService
   let service: ProductService
 
   const sampleProduct: IProduct = {
@@ -110,13 +110,13 @@ describe('ProductService', () => {
     }
 
 
-    mockImageDbService = {
+    mockImageService = {
       consumeImage: vi.fn().mockResolvedValue(undefined),
       handleReplacedImage: vi.fn().mockResolvedValue(undefined),
       handleDeletedImage: vi.fn().mockResolvedValue(undefined)
-    } as unknown as ImageDbService
+    } as unknown as ImageService
 
-    service = new ProductService(mockRepo, mockImageDbService)
+    service = new ProductService(mockRepo, mockImageService)
   })
 
   describe('create', () => {
@@ -133,9 +133,9 @@ describe('ProductService', () => {
 
       expect(mockRepo.createProduct).toHaveBeenCalledTimes(1)
       expect(result.id).toBe('prod-new')
-      expect(mockImageDbService.consumeImage).toHaveBeenCalledWith('newpic.jpg')
-      expect(mockImageDbService.consumeImage).toHaveBeenCalledWith('newlogo.jpg')
-      expect(mockImageDbService.consumeImage).toHaveBeenCalledWith('newvar.jpg')
+      expect(mockImageService.consumeImage).toHaveBeenCalledWith('newpic.jpg')
+      expect(mockImageService.consumeImage).toHaveBeenCalledWith('newlogo.jpg')
+      expect(mockImageService.consumeImage).toHaveBeenCalledWith('newvar.jpg')
     })
   })
 
@@ -149,7 +149,7 @@ describe('ProductService', () => {
       })
 
       expect(mockRepo.updateProduct).toHaveBeenCalledTimes(1)
-      expect(mockImageDbService.handleReplacedImage).not.toHaveBeenCalled()
+      expect(mockImageService.handleReplacedImage).not.toHaveBeenCalled()
     })
 
     it('should delegate image replacement to imageDbService when URLs change (saver=false)', async() => {
@@ -159,8 +159,8 @@ describe('ProductService', () => {
         saver: false
       })
 
-      expect(mockImageDbService.handleReplacedImage).toHaveBeenCalledWith('pic1.jpg', 'different-pic.jpg', false)
-      expect(mockImageDbService.handleReplacedImage).toHaveBeenCalledWith('logo1.jpg', 'different-logo.jpg', false)
+      expect(mockImageService.handleReplacedImage).toHaveBeenCalledWith('pic1.jpg', 'different-pic.jpg', false)
+      expect(mockImageService.handleReplacedImage).toHaveBeenCalledWith('logo1.jpg', 'different-logo.jpg', false)
     })
 
     it('should delegate image replacement to imageDbService when URLs change (saver=true)', async() => {
@@ -170,8 +170,8 @@ describe('ProductService', () => {
         saver: true
       })
 
-      expect(mockImageDbService.handleReplacedImage).toHaveBeenCalledWith('pic1.jpg', 'different-pic.jpg', true)
-      expect(mockImageDbService.handleReplacedImage).toHaveBeenCalledWith('logo1.jpg', 'different-logo.jpg', true)
+      expect(mockImageService.handleReplacedImage).toHaveBeenCalledWith('pic1.jpg', 'different-pic.jpg', true)
+      expect(mockImageService.handleReplacedImage).toHaveBeenCalledWith('logo1.jpg', 'different-logo.jpg', true)
     })
 
     it('should only process changed image when body is complete but only picture changed', async() => {
@@ -182,8 +182,8 @@ describe('ProductService', () => {
         saver: true
       })
 
-      expect(mockImageDbService.handleReplacedImage).toHaveBeenCalledWith('pic1.jpg', 'new-pic-only.jpg', true)
-      expect(mockImageDbService.handleReplacedImage).not.toHaveBeenCalledWith('logo1.jpg', 'logo1.jpg', expect.anything())
+      expect(mockImageService.handleReplacedImage).toHaveBeenCalledWith('pic1.jpg', 'new-pic-only.jpg', true)
+      expect(mockImageService.handleReplacedImage).not.toHaveBeenCalledWith('logo1.jpg', 'logo1.jpg', expect.anything())
     })
   })
 
@@ -194,9 +194,9 @@ describe('ProductService', () => {
       expect(mockRepo.deleteProduct).toHaveBeenCalledWith('prod-1')
       expect(msg).toBe('Producto prod-1 eliminado exitosamente')
 
-      expect(mockImageDbService.handleDeletedImage).toHaveBeenCalledWith('pic1.jpg', false)
-      expect(mockImageDbService.handleDeletedImage).toHaveBeenCalledWith('logo1.jpg', false)
-      expect(mockImageDbService.handleDeletedImage).toHaveBeenCalledWith('varpic1.jpg', false)
+      expect(mockImageService.handleDeletedImage).toHaveBeenCalledWith('pic1.jpg', false)
+      expect(mockImageService.handleDeletedImage).toHaveBeenCalledWith('logo1.jpg', false)
+      expect(mockImageService.handleDeletedImage).toHaveBeenCalledWith('varpic1.jpg', false)
     })
 
     it('should delete product and delegate image deletion to imageDbService (saver=true)', async() => {
@@ -205,9 +205,9 @@ describe('ProductService', () => {
       expect(mockRepo.deleteProduct).toHaveBeenCalledWith('prod-1')
       expect(msg).toBe('Producto prod-1 eliminado exitosamente')
 
-      expect(mockImageDbService.handleDeletedImage).toHaveBeenCalledWith('pic1.jpg', true)
-      expect(mockImageDbService.handleDeletedImage).toHaveBeenCalledWith('logo1.jpg', true)
-      expect(mockImageDbService.handleDeletedImage).toHaveBeenCalledWith('varpic1.jpg', true)
+      expect(mockImageService.handleDeletedImage).toHaveBeenCalledWith('pic1.jpg', true)
+      expect(mockImageService.handleDeletedImage).toHaveBeenCalledWith('logo1.jpg', true)
+      expect(mockImageService.handleDeletedImage).toHaveBeenCalledWith('varpic1.jpg', true)
     })
   })
 
@@ -219,7 +219,7 @@ describe('ProductService', () => {
         text: 'V'
       })
 
-      expect(mockImageDbService.consumeImage).toHaveBeenCalledWith('newvarpic.jpg')
+      expect(mockImageService.consumeImage).toHaveBeenCalledWith('newvarpic.jpg')
     })
 
     it('should do nothing with variant image if update has identical picture', async() => {
@@ -228,7 +228,7 @@ describe('ProductService', () => {
         text: 'Updated Text'
       })
 
-      expect(mockImageDbService.handleReplacedImage).not.toHaveBeenCalled()
+      expect(mockImageService.handleReplacedImage).not.toHaveBeenCalled()
     })
 
     it('should delegate variant image replacement to imageDbService (saver=false)', async() => {
@@ -237,7 +237,7 @@ describe('ProductService', () => {
         saver: false
       })
 
-      expect(mockImageDbService.handleReplacedImage).toHaveBeenCalledWith('varpic1.jpg', 'changedvarpic.jpg', false)
+      expect(mockImageService.handleReplacedImage).toHaveBeenCalledWith('varpic1.jpg', 'changedvarpic.jpg', false)
     })
 
     it('should delegate variant image replacement to imageDbService (saver=true)', async() => {
@@ -246,14 +246,14 @@ describe('ProductService', () => {
         saver: true
       })
 
-      expect(mockImageDbService.handleReplacedImage).toHaveBeenCalledWith('varpic1.jpg', 'changedvarpic.jpg', true)
+      expect(mockImageService.handleReplacedImage).toHaveBeenCalledWith('varpic1.jpg', 'changedvarpic.jpg', true)
     })
 
     it('should delete variant and delegate image deletion to imageDbService (saver=false)', async() => {
       const msg = await service.deleteVariant('var-1', false)
 
       expect(mockRepo.deleteVariant).toHaveBeenCalledWith('var-1')
-      expect(mockImageDbService.handleDeletedImage).toHaveBeenCalledWith('varpic1.jpg', false)
+      expect(mockImageService.handleDeletedImage).toHaveBeenCalledWith('varpic1.jpg', false)
       expect(msg).toBe('Variante var-1 eliminada exitosamente')
     })
 
@@ -261,14 +261,14 @@ describe('ProductService', () => {
       const msg = await service.deleteVariant('var-1', true)
 
       expect(mockRepo.deleteVariant).toHaveBeenCalledWith('var-1')
-      expect(mockImageDbService.handleDeletedImage).toHaveBeenCalledWith('varpic1.jpg', true)
+      expect(mockImageService.handleDeletedImage).toHaveBeenCalledWith('varpic1.jpg', true)
       expect(msg).toBe('Variante var-1 eliminada exitosamente')
     })
   })
 
   describe('Promise.allSettled error handling', () => {
     it('should complete create even if consuming an image fails, logging a warning', async() => {
-      (mockImageDbService.consumeImage as any).mockRejectedValueOnce(new Error('DB failure'))
+      (mockImageService.consumeImage as any).mockRejectedValueOnce(new Error('DB failure'))
 
       const result = await service.create({
         title: 'New Product',
@@ -282,7 +282,7 @@ describe('ProductService', () => {
     })
 
     it('should complete delete even if deleting storage image fails, logging an error', async() => {
-      (mockImageDbService.handleDeletedImage as any).mockRejectedValueOnce(new Error('Storage failure'))
+      (mockImageService.handleDeletedImage as any).mockRejectedValueOnce(new Error('Storage failure'))
 
       const msg = await service.delete('prod-1', false)
 

@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { ImageDbService } from './ImageDbService.js'
-import type { ImageDbRepository } from './ImageDbRepository.js'
+import { ImageService } from './ImageService.js'
+import type { ImageRepository } from './ImageRepository.js'
 import type { ImageDeleteFn } from './Image.types.js'
 
-describe('ImageDbService', () => {
-  let mockRepo: ImageDbRepository
+describe('ImageService', () => {
+  let mockRepo: ImageRepository
   let mockImageDeleteService: ReturnType<typeof vi.fn>
-  let service: ImageDbService
+  let service: ImageService
 
   beforeEach(() => {
     mockRepo = {
@@ -15,11 +15,11 @@ describe('ImageDbService', () => {
       getImage: vi.fn().mockResolvedValue({ id: 'img-1', imageUrl: 'https://example.com/test.jpg' }),
       remove: vi.fn().mockResolvedValue('Imagen borrada'),
       internalRemove: vi.fn().mockResolvedValue('Imagen internal borrada')
-    } as unknown as ImageDbRepository
+    } as unknown as ImageRepository
 
     mockImageDeleteService = vi.fn().mockResolvedValue(undefined)
 
-    service = new ImageDbService(mockRepo, mockImageDeleteService as unknown as ImageDeleteFn)
+    service = new ImageService(mockRepo, mockImageDeleteService as unknown as ImageDeleteFn)
   })
 
   describe('save', () => {

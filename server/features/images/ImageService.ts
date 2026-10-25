@@ -1,15 +1,15 @@
 import { ERROR_CODE, throwError } from '../../configs/errors.js'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
-import type { IImage, ImageQueries, PagesResult, IImageDbService, ImageDeleteFn } from './Image.types.js'
-import type { ImageDbRepository } from './ImageDbRepository.js'
+import type { IImage, ImageQueries, PagesResult, IImageService, ImageDeleteFn } from './Image.types.js'
+import type { ImageRepository } from './ImageRepository.js'
 import logger from '../../configs/logger.js'
 
-export class ImageDbService implements IImageDbService {
-  private repository: ImageDbRepository
+export class ImageService implements IImageService {
+  private repository: ImageRepository
   private imageDeleteService: ImageDeleteFn
 
   constructor(
-    repository: ImageDbRepository,
+    repository: ImageRepository,
     imageDeleteService: ImageDeleteFn
   ) {
     this.repository = repository
@@ -35,7 +35,7 @@ export class ImageDbService implements IImageDbService {
   remove = async(id: string): Promise<string> => {
     const register = await this.getImage(id)
     if (!register) {
-      throwError(ERROR_CODE.NOT_FOUND, '[ImageDbService.remove], Imagen no hallada')
+      throwError(ERROR_CODE.NOT_FOUND, '[ImageService.remove], Imagen no hallada')
     }
     await this.imageDeleteService(register.imageUrl)
     await this.repository.remove(id)
@@ -62,7 +62,7 @@ export class ImageDbService implements IImageDbService {
     try {
       await this.consumeImage(newUrl)
     } catch (error) {
-      logger.warn(`[ImageDbService.handleReplacedImage] Error consumiendo nueva imagen "${newUrl}": ${error}`)
+      logger.warn(`[ImageService.handleReplacedImage] Error consumiendo nueva imagen "${newUrl}": ${error}`)
     }
 
     if (!oldUrl) return
@@ -91,3 +91,5 @@ export class ImageDbService implements IImageDbService {
     }
   }
 }
+
+export { ImageService as ImageDbService }
