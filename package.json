@@ -11,7 +11,9 @@
     "build": "tsc",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "lint": "eslint . --fix",
-    "test": "cross-env NODE_ENV=test vitest --run"
+    "test:unit": "cross-env NODE_ENV=test vitest run --project unit",
+    "test:integration": "cross-env NODE_ENV=test vitest run --project integration",
+    "test": "cross-env NODE_ENV=test vitest run"
   },
   "keywords": [],
   "author": "antorrg-software",
@@ -24,6 +26,7 @@
     "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.1",
     "express-session": "^1.19.0",
     "firebase": "^13.1.0",
     "morgan": "^1.12.0",

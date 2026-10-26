@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import session from 'supertest'
 import serverAuth, {
   testUsersSeed,
@@ -7,17 +7,9 @@ import serverAuth, {
   mockDisabled,
   getUserid
 } from '../helpers/serverAuth.help.js'
-  
-import * as db from '../../server/configs/database.js'
-
 describe('Auth Integration Tests', () => {
-  
   beforeAll(async() => {
-    await db.startUp(true, true)
     await testUsersSeed()
-  })
-  afterAll(async() => {
-    await db.closeDatabase()
   })
   function getCsrfToken(res: any): string {
     const setCookie = res.get('Set-Cookie')

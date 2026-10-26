@@ -1,17 +1,11 @@
-import { beforeAll, afterAll, describe, it, expect } from 'vitest'
-import { startUp, closeDatabase, User as UserModel } from '../../configs/database.js'
+import { describe, it, expect } from 'vitest'
+import { User as UserModel } from '../../configs/database.js'
 import { ERROR_CODE } from '../../configs/errors.js'
 import type { User as UserDb } from '../../models/user.model.js'
 import { BaseRepository } from './BaseRepository.js'
 import * as help from './testHelpers/testHelp.help.js'
 
-describe('BaseRepository unit test', () => {
-  beforeAll(async() => {
-    await startUp(true, true)
-  })
-  afterAll(async() => {
-    await closeDatabase()
-  })
+describe('BaseRepository integration test', () => {
 
   const test = new BaseRepository<help.IUserTest, help.CreateUserInput, help.UpdateUserInput, UserDb>(
     UserModel,

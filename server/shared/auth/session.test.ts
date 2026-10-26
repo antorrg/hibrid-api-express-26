@@ -50,7 +50,7 @@ describe('Session & CSRF Auth tests', () => {
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.user.email).toBe('test@test.com')
-    console.log(res.body.user)
+    //console.log(res.body.user)
   })
 
   it('should deny access to admin route for normal user', async() => {

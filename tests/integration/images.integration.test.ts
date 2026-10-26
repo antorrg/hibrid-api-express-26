@@ -3,7 +3,6 @@ import session from 'supertest'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import app from '../../server/app.js'
-import * as db from '../../server/configs/database.js'
 import { Image } from '../../server/configs/database.js'
 import envConfig from '../../server/configs/envConfig.js'
 import {
@@ -31,9 +30,7 @@ describe('Images Integration Tests (Protected with Auth & RBAC)', () => {
   let anonymousCsrfToken: string
 
   beforeAll(async() => {
-    // 1. Inicializar base de datos limpia
     resetSeedState()
-    await db.startUp(true, true)
     await fs.mkdir(uploadDir, { recursive: true })
 
     // 2. Sembrar usuarios de prueba
@@ -54,8 +51,6 @@ describe('Images Integration Tests (Protected with Auth & RBAC)', () => {
   })
 
   afterAll(async() => {
-    await db.closeDatabase()
-
     try {
       const filePath = path.join(uploadDir, fakeImageFile.name)
       await fs.unlink(filePath)

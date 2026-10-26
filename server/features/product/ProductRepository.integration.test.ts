@@ -1,5 +1,5 @@
-import { beforeAll, afterAll, describe, it, expect } from 'vitest'
-import { startUp, closeDatabase, Product, VariantProduct } from '../../configs/database.js'
+import { beforeAll, describe, it, expect } from 'vitest'
+import { Product, VariantProduct } from '../../configs/database.js'
 import { ProductRepository } from './ProductRepository.js'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
 import type { ProductCreationAttributes } from './Product.types.js'
@@ -7,13 +7,8 @@ import type { ProductCreationAttributes } from './Product.types.js'
 describe('ProductRepository Integration Tests', () => {
   let repo: ProductRepository
 
-  beforeAll(async() => {
-    await startUp(true, true)
+  beforeAll(() => {
     repo = new ProductRepository(Product, VariantProduct)
-  })
-
-  afterAll(async() => {
-    await closeDatabase()
   })
 
   describe('Product Atomic Creation', () => {

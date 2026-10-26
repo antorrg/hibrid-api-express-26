@@ -1,17 +1,8 @@
-
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import envConfig from './envConfig.js'
 import * as db from './database.js'
 
-
-
-describe('EnvDb test', () => { 
-  beforeAll(async() => {
-    await db.startUp(true, true)
-  })
-  afterAll(async() => {
-    await db.closeDatabase()
-  })
+describe('EnvDb test', () => {
   describe('Environment variables', () => {
     it('should return the correct environment status and database variable', () => { 
       const formatEnvInfo = `App running in: ${envConfig.Status}`+

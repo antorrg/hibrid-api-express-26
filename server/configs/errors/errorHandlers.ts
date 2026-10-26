@@ -2,6 +2,7 @@ import logger from '../logger.js'
 import { type Request, type Response, type NextFunction } from 'express'
 import { ERROR_CODE, type ErrorCode } from './errorCodes.js'
 import { ErrorStatus, statusToErrorCode } from './errorStatusMap.js'
+import envConfig from '../envConfig.js'
 const isErrorCode = (code: string): code is ErrorCode => code in ERROR_CODE
 
 const loggerActive: boolean = process.env.LOG_ERRORS !== 'false'
@@ -149,7 +150,7 @@ export function errorHandler(
     message: e.message
   }
 
-  if (e.details !== undefined) {
+  if (envConfig.Status === 'test' && e.details !== undefined) {
     response.details = e.details
   }
 
