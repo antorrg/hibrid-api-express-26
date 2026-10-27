@@ -36,8 +36,18 @@ VariantProduct.belongsTo(Product, {
   onDelete: 'CASCADE'
 })
 
-VideoGroup.hasMany(Video)
-Video.belongsTo(VideoGroup)
+VideoGroup.hasMany(Video, {
+  foreignKey: 'videoGroupId',
+  as: 'videos',
+  onUpdate: 'CASCADE',
+  onDelete: 'CASCADE'
+})
+Video.belongsTo(VideoGroup, {
+  foreignKey: 'videoGroupId',
+  as: 'videoGroup',
+  onUpdate: 'CASCADE',
+  onDelete: 'CASCADE'
+})
 
 Client.hasMany(ApiKey, {
   foreignKey: 'clientId',

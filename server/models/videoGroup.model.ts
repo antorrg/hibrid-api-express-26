@@ -13,6 +13,7 @@ export class VideoGroup extends
 >{
   declare id: CreationOptional<string>
   declare title: string
+  declare description: string
   declare productId: string
   declare enabled: CreationOptional<boolean>
 }
@@ -24,8 +25,18 @@ export default (sequelize:Sequelize) => {
         type: DataTypes.UUID,
         primaryKey: true
       },
-      title: { type: DataTypes.STRING, allowNull: false },
-      productId: { type: DataTypes.INTEGER, allowNull: false },
+      title: { 
+        type: DataTypes.STRING, 
+        allowNull: false 
+      },
+      description: { 
+        type: DataTypes.TEXT, 
+        allowNull: false 
+      },
+      productId: { 
+        type: DataTypes.UUID, 
+        allowNull: false
+      },
       enabled: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
