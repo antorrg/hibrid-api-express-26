@@ -196,6 +196,26 @@ describe('Error Handlers', () => {
           details: { reason: 'expired' }
         })
       })
+
+      it('renders error view when requested by a browser (HTML client with render available)', () => {
+        const error = new AppError('RESOURCE_NOT_FOUND', { message: 'Página no encontrada' })
+        const mvcReq: Partial<Request> = {
+          originalUrl: '/contacto',
+          accepts: vi.fn().mockImplementation((types: string[]) => (types.includes('html') ? 'html' : false))
+        }
+        const mvcRes: Partial<Response> = {
+          status: vi.fn().mockReturnThis(),
+          render: vi.fn()
+        }
+
+        eh.errorHandler(error, mvcReq as Request, mvcRes as Response, next)
+
+        expect(mvcRes.status).toHaveBeenCalledWith(404)
+        expect(mvcRes.render).toHaveBeenCalledWith('error', {
+          message: 'Página no encontrada',
+          status: 404
+        })
+      })
     })
 
     describe('jsonFormat', () => {

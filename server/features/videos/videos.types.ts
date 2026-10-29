@@ -24,8 +24,8 @@ export interface VideoGroupCreate {
     productId: string
     videos: VideoCreate[]
 }
-export type VideoGroupUpdate = Omit<IVideoGroup, 'id' | 'productId' | 'videos'>
-export type VideoUpdate = Omit<Ivideo, 'id' | 'videoGroupId'>
+export type VideoGroupUpdate = Partial<Omit<IVideoGroup, 'id' | 'productId' | 'videos'>>
+export type VideoUpdate = Partial<Omit<Ivideo, 'id' | 'videoGroupId'>>
 export type PublicVideoResponse = Omit<Ivideo, 'enabled'>
 export interface PublicVGroupResponse {
     id: string

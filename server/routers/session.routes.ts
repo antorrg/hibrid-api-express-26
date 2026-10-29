@@ -17,6 +17,10 @@ sessionRouter.use(cookieParser())
 sessionRouter.use(sessionMiddleware)
 sessionRouter.use(auth.csrfProtection)
 sessionRouter.use(auth.setCsrfToken)
+
+// Rutas públicas con su propia protección de token (HMACToken / sin requerir login)
+sessionRouter.use('/contact', contactRouter)
+
 sessionRouter.use(auth.verifyCsrfToken)
 
 sessionRouter.use('/auth', authRouter)
@@ -30,8 +34,6 @@ sessionRouter.use('/logs', isAuthenticated, authorizeMinRole(UserRole.ADMIN), lo
 sessionRouter.use('/apiKey', isAuthenticated, authorizeMinRole(UserRole.ADMIN), apiKeyRouter)
 
 sessionRouter.use('/letters', isAuthenticated, authorizeMinRole(UserRole.ADMIN), letterRouter)
-
-sessionRouter.use('/contact', contactRouter)
 
 sessionRouter.use('/product', productRouter)
 

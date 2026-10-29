@@ -23,9 +23,16 @@ export class FrontPageService implements IFrontService {
   }
 
   async get(): Promise<IFrontPage> {
-    const response = await this.Repository.getAllEnabled()
+    let response = await this.Repository.getAllEnabled()
     if (!response || response.length === 0) {
-      throwError(ERROR_CODE.NOT_FOUND, 'FrontPage no encontrada')
+      response = [{
+        id: UuidHandler.createUuid(),
+        title: 'No title',
+        info_header: 'Antorrg-software',
+        picture: 'nopicture',
+        description: 'no data yet',
+        enabled:true
+      }]
     }
     return response[0]
   }

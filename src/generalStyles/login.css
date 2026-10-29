@@ -1,0 +1,59 @@
+
+.loginContainer {
+  margin-top:5%;
+  max-width: 35%
+}
+@media (max-width: 768px) {
+  .loginContainer {
+    margin-top:25%;
+    min-width: 80%;
+    max-width: 90%;
+  }
+}
+.passContainer {
+  margin-top:5%;
+  max-width: 35%
+}
+@media (max-width: 768px) {
+  .passContainer {
+    min-width: 80%;
+    max-width: 90%;
+  }
+}
+
+.form-signin {
+  max-width: 400px;
+  padding: 1rem;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.errorMsg {
+  color:red;
+  font-size: large;
+  font-weight:bold;
+  }
+
+  .buttonEye {
+    background-color:transparent; 
+  border: none ;
+  border-radius:1 rem;
+  padding: 0.6em 1.2em;
+  margin: 0.3em;
+  }
+  .buttonEye :active{
+    border-color: none;
+  }

@@ -1,0 +1,20 @@
+.bi-svg {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+}
+
+.bi-youtube   { mask-image: url('/icons/youtube.svg');   -webkit-mask-image: url('/icons/youtube.svg'); }
+.bi-twitter-x { mask-image: url('/icons/twitter-x.svg'); -webkit-mask-image: url('/icons/twitter-x.svg'); }
+.bi-instagram { mask-image: url('/icons/instagram.svg'); -webkit-mask-image: url('/icons/instagram.svg'); }
+.bi-facebook  { mask-image: url('/icons/facebook.svg');  -webkit-mask-image: url('/icons/facebook.svg'); }
+.bi-linkedin  { mask-image: url('/icons/linkedin.svg');  -webkit-mask-image: url('/icons/linkedin.svg');}
+.bi-eye       { mask-image: url('/icons/eye.svg');       -webkit-mask-image: url('/icons/eye.svg');}
+.bi-eye-slash { mask-image: url('/icons/eye-slash.svg'); -webkit-mask-image: url('/icons/eye-slash.svg');}
+.bi-whatsapp  { mask-image: url('/icons/whatsapp.svg');  -webkit-mask-image: url('/icons/whatsapp.svg');}

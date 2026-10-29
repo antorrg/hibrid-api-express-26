@@ -1,0 +1,217 @@
+.modalContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  font-size: medium;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  z-index: 1000;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.modalDialog {
+  /*background-color: rgb(255, 254, 251);
+  color: #1a1a1a;*/
+  background-color: var( --bs-body-bg);
+  color: var(--bs-body-color);
+  max-width: 40rem;
+  width: fit-content;
+  padding: 2rem;
+  border-radius: 8px;
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); */
+  box-shadow: -10px 1px 6px rgba(0, 0, 0, 0.1), -10px 15px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transform: translateY(0);
+  transition: transform 0.8s ease;
+}
+
+/* Tipos de modal */
+.modalDialog--success { color: rgb(18, 116, 26); }
+.modalDialog--info { color: rgb(0, 140, 158);}
+.modalDialog--failed { color: rgb(220, 53, 69); }
+.modalDialog--warning { color: rgb(8, 89, 100); }
+
+/* Botón de cierre */
+.modal-close-butn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.8s ease;
+}
+
+.modal-close-butn:hover {
+  color: #333;
+}
+
+/* Títulos  */
+.modalDialog h1 {
+  margin: 0 2rem 1rem 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+/*margin: arriba derecha abajo izquierda; */
+.modalDialog h2 {
+  margin: 0 0 1.5rem 1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+} 
+
+/* Botones */
+.orderButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.buttonAlert {
+  padding: 0.3rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buttonAlert:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.buttonAlert--azul {
+  background-color: rgb( 0,  140,  158);
+  color: white;
+}
+
+.buttonAlert--azul:hover {
+  background-color: rgb(8, 89, 100);
+}
+
+.buttonAlert--rojo {
+  background-color: rgb(245, 32, 42);
+  color: white;
+}
+
+.buttonAlert--rojo:hover {
+  background-color: rgb(220, 29, 38);
+}
+
+/* Loader */
+.loaderModal {
+  width: 40px;
+  height: 40px;
+  margin: 2rem auto;
+  border: 0.4rem solid;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Estados */
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .modalDialog {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .orderButtons {
+    flex-direction: column;
+  }
+  
+  .buttonAlert {
+    width: 100%;
+  }
+}
+/*&&&&& estilos iconos &&&&&&*/
+.icon-container {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* El checkmark */
+.checkmark {
+  width: 20px;
+  height: 50px;
+  border-right: 8px solid rgb(58, 159, 11);
+  border-bottom: 10px solid rgb(58, 159, 11);
+  transform: rotate(45deg);
+  position: absolute;
+  top: -2px;
+  left: 10px;
+  /* Inicia con escala de 0 y opacidad 0 para el efecto de dibujado */
+  opacity: 0;
+  transform-origin: bottom left;
+  animation: draw-check 0.8s ease forwards; /* Anima el "dibujo" */
+}
+
+/* Animación para el efecto de "dibujo" */
+@keyframes draw-check {
+  0% {
+    opacity: 0.5;
+    transform: scale(0) rotate(45deg);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1) rotate(45deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+}
+/*$$$$$$$$$$$$ Error icon $$$$$$$$$$$$$$$$$$$444*/
+
+/* La cruz roja */
+.errormark {
+  position: absolute;
+  width: 60px;
+  height: 8px;
+  background-color: rgb(245, 32, 42); /* Color rojo para la cruz */
+  /* Colocamos una línea diagonal */
+  transform: rotate(45deg); /* Primera línea diagonal */
+}
+
+.errormark::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 8px;
+  background-color: rgb(245, 32, 42); /* Color rojo */
+  top: 0;
+  left: 0;
+  transform: rotate(90deg); /* Segunda línea diagonal para cruz */
+}
+
+

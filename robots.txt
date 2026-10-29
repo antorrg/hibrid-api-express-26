@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /static/       # Bloquea el acceso a la carpeta estática (si la usas para contenido privado)
+Disallow: /admin         # Bloquea rutas administrativas (si existen)
+Allow: /                 # Permite el rastreo del resto del sitio
+
+#Sitemap: https://tusitio.com/sitemap.xml

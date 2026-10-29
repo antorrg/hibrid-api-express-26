@@ -138,8 +138,9 @@ export function errorHandler(
   err: unknown,
   req: Request, 
   res: Response,
-  next: NextFunction //eslint-disable-line
+  next: NextFunction
 ) {
+  if (res.headersSent) return next(err)
   const e = normalizeError(err)
 
   if (loggerActive) logger.error(e)
@@ -155,7 +156,21 @@ export function errorHandler(
   }
 
   const statusCode = e.status ?? ErrorStatus[e.code] ?? 500
-  res.status(statusCode).json(response)
+
+  const isApiRequest =
+    Boolean(req.originalUrl?.startsWith('/api')) ||
+    Boolean(req.xhr) ||
+    req.accepts?.(['json', 'html']) === 'json' ||
+    typeof res.render !== 'function'
+
+  if (isApiRequest) {
+    return res.status(statusCode).json(response)
+  }
+
+  return res.status(statusCode).render('error', {
+    message: response.message,
+    status: statusCode
+  })
 }
 
 export const jsonFormat = (

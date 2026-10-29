@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <link rel="icon" href="/favicon.png">
+    <script type="module" crossorigin src="<%= getAssetPath('scripts.js') %>"></script>
+    <link rel="stylesheet" crossorigin href="/index.css">
+  </head>
+  <body>
+    <div class="backgroundPages" style="min-width:100vw; min-height: 100vh;">
+      <div class="coverBack" style="max-width:70vw; min-height: fit-content;">
+        <div>
+          <h1>Error: <%= locals.status || 500 %></h1>
+          <h2><%= locals.message || 'Error inesperado' %></h2>
+          <a class="btn btn-sm btn-primary me-2" href="/">Volver</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 50000);
+    </script>
+  </body>
+</html>

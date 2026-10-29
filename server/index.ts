@@ -11,10 +11,10 @@ import app from './app.js'
 import { startUp } from './configs/database.js'
 import envConfig from './configs/envConfig.js'
 
-const message =`Server is listening on port ${envConfig.Port}\nServer in ${envConfig.Status}\nEverything is allright!!`
+const message =`Server is listening on http://localhost:${envConfig.Port}\nServer in ${envConfig.Status}\nEverything is allright!!`
 async function serverBootstrap(){
   try{
-    await startUp()
+    await startUp(true)
     app.listen(envConfig.Port,() => {
       console.log(message)})
   }catch(error){

@@ -1,0 +1,22 @@
+<%- include('./partials/header') %>
+
+<main>
+  <div class="container-sm">
+    <div class="modal modal-tour position-static d-block modal-custom py-5">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-body p-5 text-center">
+            <img class="d-block mx-auto mb-4 img-fluid" src="<%= item.img %>" alt="image not found">
+            <p class="text-muted">
+              <strong>Texto:</strong>
+              <%= item.text %>
+            </p>
+            <a class="btn btn-sm btn-secondary mt-3 mx-auto w-15" href="/detalles/<%= item.ProductId %>">Cerrar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('./partials/footer') %>

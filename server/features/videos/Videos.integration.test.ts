@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { videoService, videoRepository } from '../../shared/dependencies.js'
+import { videoService } from '../../shared/dependencies.js'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
 import type { VideoGroupCreate } from './videos.types.js'
 
@@ -103,6 +103,11 @@ describe('Videos Integration Tests (Service & Repository)', () => {
       const target = allGroups[0]
 
       const publicGroup = await videoService.publicGetVideoGroup(target.productId)
+
+      expect(typeof publicGroup).not.toBe('string')
+      if (typeof publicGroup === 'string') {
+        throw new Error('Expected PublicVGroupResponse')
+      }
 
       expect(publicGroup.id).toBe(target.id)
       expect(publicGroup.productId).toBe(target.productId)

@@ -23,7 +23,7 @@ export class VideosService {
     return await this.repository.publicGetVideos()
   }
 
-  async publicGetVideoGroup(productId: string): Promise<PublicVGroupResponse> {
+  async publicGetVideoGroup(productId: string): Promise<PublicVGroupResponse | string> {
     return await this.repository.publicGetVideoGroup(productId)
   }
 

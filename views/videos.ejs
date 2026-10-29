@@ -1,0 +1,28 @@
+<%- include('./partials/header') %>
+<!-- videos.ejs -->
+<div class="album py-5">
+  <div class="container backgroundElements">
+    <h2 class="mb-4 text-center"><%= producto.nombre %></h2>
+    <a href="/detalles/<%-producto.productId%>">Volver</a>
+
+    <% if (producto.videos && producto.videos.length > 0) { %>
+      <div class="row justify-content-center g-4">
+        <% producto.videos.forEach(video => { %>
+          <div class="col-12 col-md-6 col-lg-4 d-flex flex-column align-items-center mb-3">
+            <strong class="mb-2 text-center">Título: <%= video.name %></strong>
+            <div class="ratio ratio-16x9 w-100" style="max-width: 480px;">
+              <iframe 
+                src="https://www.youtube.com/embed/<%= video.youtubeId %>" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p class="text-center">No hay videos disponibles.</p>
+    <% } %>
+  </div>
+</div>
+<%- include('./partials/footer') %>

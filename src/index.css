@@ -1,0 +1,44 @@
+@import './generalStyles/customizedBootstrap.css';
+@import './generalStyles/resetStyles.css';
+@import './generalStyles/login.css';
+@import './generalStyles/Loading.css';
+@import './generalStyles/modalService.css';
+@import './generalStyles/carousel.css';
+@import './generalStyles//icons.css';
+
+
+.caption-nav {
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.5); /* Fondo semitransparente */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(10px); /* Efecto de desenfoque para Safari */
+    padding: 0.2rem;
+    border-radius: 5px; /* Bordes redondeados */
+    color: black; /* Asegúrate de que el texto sea visible */
+  }
+  .caption-title {
+    z-index: 10;
+    max-width: 60vw;
+    background: rgba(255, 255, 255, 0.5); /* Fondo semitransparente */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(10px); /* Efecto de desenfoque para Safari */
+    padding: 1rem;
+    border-radius: 8px; /* Bordes redondeados */
+    color: black; /* Asegúrate de que el texto sea visible */
+  }
+  .cover-container1 {
+    background-image:url('/src/background-dark.webp');
+    background-size: cover; /* Para que la imagen cubra todo el fondo */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    min-height: 100vh; /* Asegura que ocupe al menos la altura completa de la pantalla */
+ 
+  }
+  .container-caption {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: center;
+    height: fit-content; 
+  }

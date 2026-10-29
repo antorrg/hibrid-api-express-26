@@ -1,0 +1,44 @@
+<%- include('./partials/header') %>
+
+<style>
+  #background-section {
+    background-image: url('/imagenBack2.webp');
+    background-size: cover;
+    background-position: center;
+    min-width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+</style>
+
+<section class="container-fluid" id="background-section">
+  <div class="container-caption">
+    <div class="caption-title ms-5">
+      <h1><%= frontPage.title %></h1>
+      <p class="lead"><%= frontPage.description %></p>
+      <p class="lead">
+        <a class="btn btn-lg btn-dark fw-bold" href="/detalles">Ver proyectos:</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="container marketing mt-4 ms-4 mb-3">
+  <h2 class="h2 fw-normal mb-3">Proyectos realizados:</h2>
+  <div class="row">
+    <% products.forEach(function(inf) { %>
+      <div class="col-lg-4 backgroundElements">
+        <img src="<%= inf.logo %>" class="bd-placeholder-img rounded-circle" width="70" height="70" alt="Placeholder">
+        <h3 class="h2 fw-normal"><%= inf.title %></h3>
+        <p><%= inf.infoHeader %></p>
+        <p>
+          <a class="btn btn-sm btn-outline-primary" href="/detalles/<%= inf.id %>">Ver detalles &raquo;</a>
+        </p>
+      </div>
+    <% }); %>
+  </div>
+</section>
+
+<%- include('./partials/footer') %>

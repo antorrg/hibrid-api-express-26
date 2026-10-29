@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 
 const ENV_FILE = {
-  production: '.env.production',
+  production: '.env',
   development: '.env.development',
   test: '.env.test'
 } as const
@@ -9,6 +9,19 @@ type Environment = keyof typeof ENV_FILE
 const NODE_ENV = (process.env.NODE_ENV as Environment) ?? 'production'
 
 dotenv.config({ path: ENV_FILE[NODE_ENV] })
+
+const redirection = () => {
+  switch(process.env.NODE_ENV){
+  case 'development':
+    return 'http://localhost:5173/'
+  case 'preview':
+    return '/'
+  case 'test':
+    return 'http://localhost:5173/'
+  case 'production':
+    return '/'
+  }
+}
 
 const getNumberEnv = (value:string):number => {
   const key = process.env[value]
@@ -29,6 +42,7 @@ const envConfig = {
   DatabaseUrl: getStringEnv('DATABASE_URL'),
   UserImg: getStringEnv('USER_IMG'),
   SessionSecret: getStringEnv('SESSION_SECRET'),
+  Redirection: redirection,
   // User Owner
   AdminUserEmail: getStringEnv('ADMIN_EMAIL'),
   AdminUserName: getStringEnv('ADMIN_NAME'),
@@ -45,7 +59,10 @@ const envConfig = {
   FireMeasure: getStringEnv('MEASUREMENT_ID'),
   // Node-mailer
   GmailUser: getStringEnv('GMAIL_USER'),
-  GmailPass: getStringEnv('GMAIL_PASSWORD')
+  GmailPass: getStringEnv('GMAIL_PASSWORD'),
+  // Email:
+  WhatsAppNumber: getStringEnv('WHATS_APP_NUMBER'),
+  WhatsAppMessage: getStringEnv('WHATS_APP_MESSAGE')
 }
 export default envConfig
   

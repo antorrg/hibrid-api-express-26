@@ -1,0 +1,57 @@
+<%- include('./partials/header') %>
+
+<main>
+  <section class="py-5 text-center container backgroundElements">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="fw-light">Proyecto <%= info.title %></h1>
+   
+        <img class="img-fluid mb-3" src="<%= info.landing %>" alt="Not Found">
+        <p class="lead text-muted"><%= info.info_body %></p>
+        <p>
+          <a class="btn btn-sm btn-secondary my-2 me-2" href="/detalles">Volver</a>
+          <a class="btn btn-sm btn-primary my-2 me-2" href="<%= info.url %>" target="_blank">Ir al sitio web</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="album py-5">
+    <div class="container backgroundElements">
+      <% 
+        const chunk = (arr, size) => {
+          return arr.reduce((acc, _, i) => {
+            if (i % size) {
+              acc[acc.length - 1].push(arr[i]);
+            } else {
+              acc.push([arr[i]]);
+            }
+            return acc;
+          }, []);
+        };
+        const rows = chunk(variants, 3);
+      %>
+      <% rows.forEach(row => { %>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-sm-3 g-3">
+          <% row.forEach(item => { %>
+            <div class="col mt-2 mb-2">
+              <div class="card shadow-sm">
+                <img class="card-img-top" src="<%= item.img %>" alt="Card image" style="max-width: 25rem; height:15rem; object-fit:cover; object-position:center;">
+                <div class="card-body">
+                  <p class="card-text"><%= item.text %></p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <a class="btn btn-sm btn-outline-secondary" href="/detalles/item/<%= item.id %>">Ver más</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</main>
+
+<%- include('./partials/footer') %>

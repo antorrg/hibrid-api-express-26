@@ -19,6 +19,14 @@ export default defineConfig({
       },
       {
         test: {
+          name: 'frontend-unit',
+          include: ['src/**/*.test.js'],
+          environment: 'jsdom',
+          globals: true
+        }
+      },
+      {
+        test: {
           name: 'integration',
           include: [
             'server/**/*.integration.test.ts',
