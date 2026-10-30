@@ -62,7 +62,9 @@ const envConfig = {
   GmailPass: getStringEnv('GMAIL_PASSWORD'),
   // Email:
   WhatsAppNumber: getStringEnv('WHATS_APP_NUMBER'),
-  WhatsAppMessage: getStringEnv('WHATS_APP_MESSAGE')
+  WhatsAppMessage: getStringEnv('WHATS_APP_MESSAGE'),
+
+  BaseUrl: getStringEnv('VITE_BASE_PATH')
 }
 export default envConfig
   

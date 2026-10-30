@@ -60,7 +60,7 @@ export const contact = async(req:Request, res:Response) => {
     csrfToken,
     uriWhatsApp: help.uriWhatsApp
   }
-  console.log('dataContact: ', data)
+  //console.log('dataContact: ', data)
   res.render('contact', data)
 }
 export const videos = async(req:Request, res:Response) => {

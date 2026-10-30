@@ -2,6 +2,7 @@ import path from 'node:path'
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
+import { corsConfig } from './configs/corsConfig.js'
 import * as eh from './configs/errors.js'
 import envConfig from './configs/envConfig.js'
 import { getAssetPath } from './configs/getAssetPath.js'
@@ -19,7 +20,7 @@ const app = express()
 app.locals.getAssetPath = getAssetPath
 if(envConfig.Status === 'development'){
   app.use(morgan('dev'))}
-app.use(cors())
+app.use(cors(corsConfig))
 app.set('view engine', 'ejs')
 app.set('views', viewPath)
 app.use(express.static(staticPath))

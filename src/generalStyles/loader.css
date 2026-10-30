@@ -1,12 +1,21 @@
-/* From Uiverse.io by cosnametv */ 
+
+.loader-container {
+  display: grid;
+  place-items: center;
+  /* Stack children on top of each other */
+  grid-template-areas: "stack";
+
+  >* {
+    grid-area: stack;
+  }
+}
 .loader {
   --color: #008c9e;
-  --size: 100px;
-  width: var(--size);
-  height: var(--size);
+  width: 10em;
+  height: 10em;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
+  gap: 0.5em;
 }
 
 .loader span {

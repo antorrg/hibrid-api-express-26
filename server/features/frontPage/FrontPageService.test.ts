@@ -49,10 +49,19 @@ describe('FrontPageService & FrontPageController Unit Tests', () => {
       expect(result).toEqual(fakeFrontPage)
     })
 
-    it('get() should throw NOT_FOUND error when no frontpage exists', async() => {
+    it('get() should retrieve mock data when no frontpage exists', async() => {
       mockRepository.getAllEnabled = vi.fn().mockResolvedValue([])
 
-      await expect(service.get()).rejects.toThrow('FrontPage no encontrada')
+      const result = await service.get()
+
+      expect(result).toMatchObject({
+        'description': 'no data yet',
+        'enabled': true,
+        'id': expect.any(String),
+        'info_header': 'Antorrg-software',
+        'picture': 'nopicture',
+        'title': 'No title'
+      })
     })
 
     it('create() should form entity with UUID, enabled: true, create in repo and consume image', async() => {

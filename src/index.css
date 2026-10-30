@@ -1,7 +1,7 @@
 @import './generalStyles/customizedBootstrap.css';
 @import './generalStyles/resetStyles.css';
 @import './generalStyles/login.css';
-@import './generalStyles/Loading.css';
+@import './generalStyles/loader.css';
 @import './generalStyles/modalService.css';
 @import './generalStyles/carousel.css';
 @import './generalStyles//icons.css';
