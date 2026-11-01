@@ -7,7 +7,6 @@ import {
   type IFrontPage,
   type IFrontService
 } from './FrontPage.types.js'
-import { throwError, ERROR_CODE } from '../../configs/errors.js'
 import logger from '../../configs/logger.js'
 
 export class FrontPageService implements IFrontService {

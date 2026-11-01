@@ -107,7 +107,7 @@ export class UserService {
      */
   async upgradeUser(userId: string, data:{role:string, enabled: boolean}): Promise<IUser> {
 
-    const allowedNewRole =  ['OWNER', 'ADMIN','USER']
+    const allowedNewRole =  ['ADMIN','USER']
     if(!allowedNewRole.includes(data.role)){throwError(ERROR_CODE.ROLE_NOT_ALLOWED, 'Invalid role')}
 
     const user = await this.userRepository.getById(userId)

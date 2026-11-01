@@ -85,6 +85,12 @@ const Products = () => {
 
                   <div className="d-flex align-items-center gap-2">
                     <Link
+                      className="btn btn-sm btn-outline-success px-3 py-2 fw-medium rounded-pill"
+                      to={`/admin/videos/create/${info.id}`}
+                    >
+                      Crear videos
+                    </Link>
+                    <Link
                       className="btn btn-sm btn-outline-secondary px-3 py-2 fw-medium rounded-pill"
                       to={`/admin/product/${info.id}`}
                     >

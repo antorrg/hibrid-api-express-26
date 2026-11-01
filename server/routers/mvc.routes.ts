@@ -15,6 +15,9 @@ mvcRoutes.get(
   '/detalles/item/:id',
   handler.getVariants
 )
+mvcRoutes.get('/videos/:id',
+  handler.videoProduct 
+)
 mvcRoutes.get(
   '/contacto',
   handler.contact

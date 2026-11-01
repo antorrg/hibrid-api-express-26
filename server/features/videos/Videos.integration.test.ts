@@ -40,39 +40,44 @@ describe('Videos Integration Tests (Service & Repository)', () => {
   })
 
   describe('Read Operations (Internal)', () => {
-    it('should return all video groups with their videos populated', async() => {
-      const allGroups = await videoService.getVideos()
+    it('should return paginated video groups', async() => {
+      const result = await videoService.getVideos()
 
-      expect(allGroups.length).toBeGreaterThan(0)
-      const first = allGroups[0]
+      expect(result.info).toBeDefined()
+      expect(result.info.page).toBe(1)
+      expect(result.info.limit).toBe(5)
+      expect(result.info.totalPages).toBeGreaterThanOrEqual(1)
+      expect(result.data.length).toBeGreaterThan(0)
+
+      const first = result.data[0]
       expect(first).toHaveProperty('id')
       expect(first).toHaveProperty('title')
       expect(first).toHaveProperty('productId')
-      expect(first).toHaveProperty('videos')
-      expect(Array.isArray(first.videos)).toBe(true)
+      expect(first).toHaveProperty('enabled')
     })
 
     it('should return a specific video group by id with its videos', async() => {
-      const allGroups = await videoService.getVideos()
-      const targetGroup = allGroups[0]
+      const { data } = await videoService.getVideos()
+      const targetSummary = data[0]
 
-      const found = await videoService.getVideoGroup(targetGroup.id)
+      const found = await videoService.getVideoGroup(targetSummary.id!)
 
-      expect(found.id).toBe(targetGroup.id)
-      expect(found.title).toBe(targetGroup.title)
-      expect(found.videos).toHaveLength(targetGroup.videos.length)
-      expect(found.videos[0].videoGroupId).toBe(targetGroup.id)
+      expect(found.id).toBe(targetSummary.id)
+      expect(found.title).toBe(targetSummary.title)
+      expect(found.videos.length).toBeGreaterThan(0)
+      expect(found.videos[0].videoGroupId).toBe(targetSummary.id)
     })
 
     it('should return an individual video by id', async() => {
-      const allGroups = await videoService.getVideos()
-      const targetVideo = allGroups[0].videos[0]
+      const { data } = await videoService.getVideos()
+      const targetGroup = await videoService.getVideoGroup(data[0].id!)
+      const targetVideo = targetGroup.videos[0]
 
       const found = await videoService.getVideo(targetVideo.id)
 
       expect(found.id).toBe(targetVideo.id)
       expect(found.name).toBe(targetVideo.name)
-      expect(found.videoGroupId).toBe(allGroups[0].id)
+      expect(found.videoGroupId).toBe(targetGroup.id)
       expect(found.enabled).toBe(true)
     })
   })
@@ -99,10 +104,10 @@ describe('Videos Integration Tests (Service & Repository)', () => {
     })
 
     it('should return public video group by productId with its videos', async() => {
-      const allGroups = await videoService.getVideos()
-      const target = allGroups[0]
+      const { data } = await videoService.getVideos()
+      const target = data[0]
 
-      const publicGroup = await videoService.publicGetVideoGroup(target.productId)
+      const publicGroup = await videoService.publicGetVideoGroup(target.productId!)
 
       expect(typeof publicGroup).not.toBe('string')
       if (typeof publicGroup === 'string') {
@@ -112,6 +117,7 @@ describe('Videos Integration Tests (Service & Repository)', () => {
       expect(publicGroup.id).toBe(target.id)
       expect(publicGroup.productId).toBe(target.productId)
       expect(publicGroup.title).toBe(target.title)
+      expect(publicGroup).toHaveProperty('productTitle')
       expect(publicGroup).not.toHaveProperty('enabled')
 
       expect(publicGroup.videos).toBeDefined()
@@ -120,39 +126,51 @@ describe('Videos Integration Tests (Service & Repository)', () => {
       expect(publicGroup.videos![0]).not.toHaveProperty('enabled')
     })
 
+    it('should return empty/fallback video group when product has no videos', async() => {
+      const randomProductId = UuidHandler.createUuid()
+      const publicGroup = await videoService.publicGetVideoGroup(randomProductId)
+
+      expect(publicGroup.productId).toBe(randomProductId)
+      expect(publicGroup.title).toBe('Videos no implementados aun')
+      expect(publicGroup.description).toBe('No hay videos aun')
+      expect(publicGroup.videos).toEqual([])
+    })
+
     it('should return a public video by id without enabled property', async() => {
-      const allGroups = await videoService.getVideos()
-      const targetVideo = allGroups[0].videos[0]
+      const { data } = await videoService.getVideos()
+      const targetGroup = await videoService.getVideoGroup(data[0].id!)
+      const targetVideo = targetGroup.videos[0]
 
       const publicVideo = await videoService.publicGetVideo(targetVideo.id)
 
       expect(publicVideo.id).toBe(targetVideo.id)
       expect(publicVideo.name).toBe(targetVideo.name)
       expect(publicVideo.youTubeId).toBe(targetVideo.youTubeId)
-      expect(publicVideo.videoGroupId).toBe(allGroups[0].id)
+      expect(publicVideo.videoGroupId).toBe(targetGroup.id)
       expect(publicVideo).not.toHaveProperty('enabled')
     })
   })
 
   describe('Update Operations', () => {
     it('should update video group attributes', async() => {
-      const allGroups = await videoService.getVideos()
-      const targetGroup = allGroups[0]
+      const { data } = await videoService.getVideos()
+      const targetGroup = data[0]
 
-      const updated = await videoService.videoGroupUpdate(targetGroup.id, {
+      const updated = await videoService.videoGroupUpdate(targetGroup.id!, {
         title: 'Titulo Actualizado de Grupo'
       })
 
       expect(updated.id).toBe(targetGroup.id)
       expect(updated.title).toBe('Titulo Actualizado de Grupo')
 
-      const refreshed = await videoService.getVideoGroup(targetGroup.id)
+      const refreshed = await videoService.getVideoGroup(targetGroup.id!)
       expect(refreshed.title).toBe('Titulo Actualizado de Grupo')
     })
 
     it('should update individual video attributes', async() => {
-      const allGroups = await videoService.getVideos()
-      const targetVideo = allGroups[0].videos[0]
+      const { data } = await videoService.getVideos()
+      const targetGroup = await videoService.getVideoGroup(data[0].id!)
+      const targetVideo = targetGroup.videos[0]
 
       const updated = await videoService.videoUpdate(targetVideo.id, {
         name: 'Nombre de Video Actualizado'
@@ -197,11 +215,11 @@ describe('Videos Integration Tests (Service & Repository)', () => {
 
   describe('Individual Video Management', () => {
     it('should create an individual video for an existing group', async() => {
-      const allGroups = await videoService.getVideos()
-      const targetGroup = allGroups[0]
+      const { data } = await videoService.getVideos()
+      const targetGroup = data[0]
 
       const newVideo = await videoService.videoCreate({
-        videoGroupId: targetGroup.id,
+        videoGroupId: targetGroup.id!,
         name: 'Video Agregado Individualmente',
         youTubeId: 'yt-individual'
       })
@@ -211,16 +229,16 @@ describe('Videos Integration Tests (Service & Repository)', () => {
       expect(newVideo.name).toBe('Video Agregado Individualmente')
       expect(newVideo.enabled).toBe(true)
 
-      const groupWithNewVideo = await videoService.getVideoGroup(targetGroup.id)
+      const groupWithNewVideo = await videoService.getVideoGroup(targetGroup.id!)
       expect(groupWithNewVideo.videos.some(v => v.id === newVideo.id)).toBe(true)
     })
 
     it('should delete an individual video without deleting the group', async() => {
-      const allGroups = await videoService.getVideos()
-      const targetGroup = allGroups[0]
+      const { data } = await videoService.getVideos()
+      const targetGroup = data[0]
 
       const tempVideo = await videoService.videoCreate({
-        videoGroupId: targetGroup.id,
+        videoGroupId: targetGroup.id!,
         name: 'Video Temporal Para Borrar',
         youTubeId: 'yt-temp'
       })
@@ -231,7 +249,7 @@ describe('Videos Integration Tests (Service & Repository)', () => {
       await expect(videoService.getVideo(tempVideo.id)).rejects.toThrow('no encontrado')
 
       // El grupo principal sigue existiendo intacto
-      const groupStillExists = await videoService.getVideoGroup(targetGroup.id)
+      const groupStillExists = await videoService.getVideoGroup(targetGroup.id!)
       expect(groupStillExists.id).toBe(targetGroup.id)
     })
   })

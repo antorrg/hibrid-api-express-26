@@ -1,0 +1,264 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { Form } from 'react-bootstrap';
+import { useFrontPageStore, isFrontPagePersisted } from '../frontPageStore';
+import SelectImages from '../../images/SelectImages/SelectImages';
+import ConfirmModal from '../../../../shared/modalComponents/ConfirmModal';
+import Loader from '../../../../shared/components/Loader';
+import DoubleButton from '../../../Utils/DoubleButton';
+import type { UpdateFrontPageDTO } from '../frontPageTypes';
+
+const EditFrontPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { frontPage, isLoading, fetchFrontPage, updateFrontPage } = useFrontPageStore();
+
+  const [title, setTitle] = useState('');
+  const [infoHeader, setInfoHeader] = useState('');
+  const [picture, setPicture] = useState<string | null>(null);
+  const [initialPicture, setInitialPicture] = useState<string | null>(null);
+  const [description, setDescription] = useState('');
+  const [enabled, setEnabled] = useState(true);
+  const [saver, setSaver] = useState(false);
+
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [hasLoadedData, setHasLoadedData] = useState(false);
+
+  useEffect(() => {
+    fetchFrontPage();
+  }, [fetchFrontPage]);
+
+  // Poblado de datos iniciales
+  useEffect(() => {
+    if (frontPage && isFrontPagePersisted(frontPage)) {
+      setTitle(frontPage.title || '');
+      setInfoHeader(frontPage.info_header || '');
+      setPicture(frontPage.picture || null);
+      setInitialPicture(frontPage.picture || null);
+      setDescription(frontPage.description || '');
+      setEnabled(frontPage.enabled ?? true);
+      setSaver(false);
+      setHasLoadedData(true);
+    }
+  }, [frontPage]);
+
+  const handleGoBack = () => {
+    navigate('/admin?tab=portada');
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!title.trim()) {
+      newErrors.title = 'El título de la portada es obligatorio.';
+    }
+
+    if (!infoHeader.trim()) {
+      newErrors.infoHeader = 'La cabecera o información de posicionamiento es obligatoria.';
+    }
+
+    if (!picture) {
+      newErrors.picture = 'Debes seleccionar o subir una imagen para la portada.';
+    }
+
+    if (!description.trim()) {
+      newErrors.description = 'La descripción de la portada es obligatoria.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validateForm()) {
+      setConfirmModalOpen(true);
+    }
+  };
+
+  const handleConfirmSubmit = async () => {
+    if (!frontPage?.id) return;
+    setConfirmModalOpen(false);
+
+    const payload: UpdateFrontPageDTO = {
+      title: title.trim(),
+      info_header: infoHeader.trim(),
+      picture: picture || '',
+      description: description.trim(),
+      enabled,
+      saver,
+    };
+
+    const updated = await updateFrontPage(frontPage.id, payload);
+    if (updated) {
+      navigate('/admin?tab=portada');
+    }
+  };
+
+  if (isLoading && !hasLoadedData) {
+    return (
+      <div className="container-fluid py-5 d-flex justify-content-center align-items-center">
+        <Loader fullScreen={false} scale={0.7} text="Cargando portada a editar..." />
+      </div>
+    );
+  }
+
+  return (
+    <div className="container-fluid py-4 mb-5">
+      {/* Modal de confirmación para guardar cambios */}
+      <ConfirmModal
+        isOpen={confirmModalOpen}
+        title="Actualizar portada"
+        message="¿Estás seguro de que deseas guardar los cambios en la portada principal?"
+        confirmText="Sí, actualizar portada"
+        cancelText="Cancelar"
+        confirmVariant="btn-primary"
+        onConfirm={handleConfirmSubmit}
+        onCancel={() => setConfirmModalOpen(false)}
+      />
+
+      {/* Navegación superior */}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <button
+          type="button"
+          onClick={handleGoBack}
+          className="btn btn-outline-secondary rounded-pill px-3 py-1 btn-sm d-flex align-items-center gap-1"
+        >
+          <span>← Volver a Portada</span>
+        </button>
+      </div>
+
+      <div className="card shadow-sm border border-secondary-subtle bg-body p-4 p-md-5" style={{ borderRadius: '16px' }}>
+        <div className="border-bottom border-secondary-subtle pb-3 mb-4">
+          <h2 className="h4 fw-bold text-body-emphasis mb-1">Editar Portada Principal</h2>
+          <p className="text-body-secondary small mb-0">
+            Actualiza los datos visuales, textos y estado de la portada del sitio.
+          </p>
+        </div>
+
+        <Form onSubmit={handleSubmit}>
+          {/* Título */}
+          <div className="mb-4">
+            <label htmlFor="frontpage-title" className="form-label fw-semibold text-body">
+              Título de la Portada <span className="text-danger">*</span>
+            </label>
+            <input
+              id="frontpage-title"
+              type="text"
+              className={`form-control ${errors.title ? 'is-invalid' : ''}`}
+              placeholder="Ej: Bienvenido a Nuestro Catálogo Oficial"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              disabled={isLoading}
+            />
+            {errors.title && <div className="invalid-feedback">{errors.title}</div>}
+          </div>
+
+          {/* Cabecera / Info Header */}
+          <div className="mb-4">
+            <label htmlFor="frontpage-info-header" className="form-label fw-semibold text-body">
+              Cabecera / Posicionamiento <span className="text-danger">*</span>
+            </label>
+            <input
+              id="frontpage-info-header"
+              type="text"
+              className={`form-control ${errors.infoHeader ? 'is-invalid' : ''}`}
+              placeholder="Ej: Calidad, vanguardia y tecnología"
+              value={infoHeader}
+              onChange={(e) => setInfoHeader(e.target.value)}
+              disabled={isLoading}
+            />
+            {errors.infoHeader && <div className="invalid-feedback">{errors.infoHeader}</div>}
+          </div>
+
+          {/* Selector de Imagen con SelectImages */}
+          <div className="mb-4">
+            <label className="form-label fw-semibold text-body d-block">
+              Imagen de Portada <span className="text-danger">*</span>
+            </label>
+            <SelectImages
+              id="frontpage-edit-image"
+              titleField="Imagen de Portada:"
+              value={picture}
+              onChange={(newPic) => setPicture(newPic)}
+            />
+            {errors.picture && <div className="text-danger small mt-1">{errors.picture}</div>}
+          </div>
+
+          {/* Saver Switch si se cambió la imagen respecto a la original */}
+          {picture && initialPicture && picture !== initialPicture && (
+            <div className="card p-3 mb-4 bg-body-tertiary border border-secondary-subtle rounded-3">
+              <Form.Check
+                type="switch"
+                id="saverSwitch"
+                checked={saver}
+                onChange={(e) => setSaver(e.target.checked)}
+                label={
+                  <div>
+                    <span className="fw-semibold text-body d-block">Conservar imagen anterior en la galería</span>
+                    <span className="text-body-secondary small">
+                      Si está desmarcado, la imagen anterior será descartada si no es utilizada en otro registro.
+                    </span>
+                  </div>
+                }
+              />
+            </div>
+          )}
+
+          {/* Switch de Estado Enabled */}
+          <div className="card p-3 mb-4 bg-body-tertiary border border-secondary-subtle rounded-3">
+            <Form.Check
+              type="switch"
+              id="enabledSwitch"
+              checked={enabled}
+              onChange={(e) => setEnabled(e.target.checked)}
+              label={
+                <div>
+                  <span className="fw-semibold text-body d-block">Portada Habilitada</span>
+                  <span className="text-body-secondary small">
+                    {enabled
+                      ? 'La portada está visible en la vista pública de la aplicación.'
+                      : 'La portada se encuentra deshabilitada temporalmente.'}
+                  </span>
+                </div>
+              }
+            />
+          </div>
+
+          {/* Descripción */}
+          <div className="mb-4">
+            <label htmlFor="frontpage-description" className="form-label fw-semibold text-body">
+              Descripción General <span className="text-danger">*</span>
+            </label>
+            <Form.Control
+              as="textarea"
+              id="frontpage-description"
+              rows={5}
+              className={`form-control ${errors.description ? 'is-invalid' : ''}`}
+              placeholder="Escribe la descripción o bienvenida que se mostrará en la portada..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              disabled={isLoading}
+            />
+            {errors.description && <div className="invalid-feedback">{errors.description}</div>}
+          </div>
+
+          {/* Botones de acción */}
+          <DoubleButton
+            onClickLeft={handleGoBack}
+            textLeft="Cancelar"
+            onClickRight={() => {
+              if (validateForm()) {
+                setConfirmModalOpen(true);
+              }
+            }}
+            textRight={isLoading ? <Loader fullScreen={false} scale={0.4} text="" /> : 'Guardar Cambios'}
+            disabledRight={isLoading}
+          />
+        </Form>
+      </div>
+    </div>
+  );
+};
+
+export default EditFrontPage;

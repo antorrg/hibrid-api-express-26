@@ -11,8 +11,11 @@ import type {
   VideoUpdate,
   VideoCreationAttributes,
   VideoGroupCreationAttributes,
-  VideoRepository as IVideoRepository
+  VideoRepository as IVideoRepository,
+  VGQuery,
+  SingleVideoGroupResponse
 } from './videos.types.js'
+import { UuidHandler } from '../../shared/utils/UuidHandler.js'
 
 export class VideoRepository implements IVideoRepository {
   constructor(
@@ -54,12 +57,12 @@ export class VideoRepository implements IVideoRepository {
 
     return groups.map(g => VideoParser.publicVGroup({
       ...g,
-      videos: (videosByGroup.get(g.id) || []) as any
+      videos: (videosByGroup.get(g.id) || []) as Ivideo[]
     }))
   }
 
-  async publicGetVideoGroup(productId: string): Promise<PublicVGroupResponse | string> {
-    const groups = await sequelize.query<IVideoGroup>(`
+  async publicGetVideoGroup(productId: string): Promise<PublicVGroupResponse> {
+    let groups = await sequelize.query<{ id: string; title: string; description: string; productId: string }>(`
       SELECT id, title, description, "productId"
       FROM "${this.videoGroupModel.tableName}"
       WHERE enabled = true
@@ -70,25 +73,47 @@ export class VideoRepository implements IVideoRepository {
       type: QueryTypes.SELECT
     })
 
-    if (!groups || groups.length === 0) {
-      return 'Videos no implementados aun'
-      //throwError(ERROR_CODE.NOT_FOUND, `VideoGroup con ProductId ${productId} no encontrado`)
+    const hasGroup = Boolean(groups && groups.length > 0)
+    if (!hasGroup) {
+      groups = [{
+        id: UuidHandler.createUuid(),
+        title: 'Videos no implementados aun',
+        description: 'No hay videos aun',
+        productId
+      }]
     }
 
-    const videos = await sequelize.query<Ivideo>(`
-      SELECT id, "videoGroupId", name, "youTubeId"
-      FROM "${this.videoModel.tableName}"
+    const products = await sequelize.query<{ title: string }>(`
+      SELECT title 
+      FROM product
       WHERE enabled = true
-      AND "videoGroupId" = :videoGroupId
-      ORDER BY "createdAt" ASC
-    `, {
-      replacements: { videoGroupId: groups[0].id },
+      AND id = :id
+      LIMIT 1
+      `,
+    {
+      replacements: { id: productId },
       type: QueryTypes.SELECT
-    })
+    }
+    )
+    const productTitle = products[0]?.title ?? ''
+
+    const videos = hasGroup
+      ? await sequelize.query<Ivideo>(`
+        SELECT id, "videoGroupId", name, "youTubeId"
+        FROM "${this.videoModel.tableName}"
+        WHERE enabled = true
+        AND "videoGroupId" = :videoGroupId
+        ORDER BY "createdAt" DESC
+      `, {
+        replacements: { videoGroupId: groups[0].id },
+        type: QueryTypes.SELECT
+      })
+      : []
 
     return VideoParser.publicVGroup({
       ...groups[0],
-      videos: (videos || []) as any
+      productTitle,
+      videos: (videos || []) as Ivideo[]
     })
   }
 
@@ -111,12 +136,27 @@ export class VideoRepository implements IVideoRepository {
     return VideoParser.publicVideo(videos[0])
   }
 
-  async getVideos(): Promise<IVideoGroup[]> {
-    const groups = await this.videoGroupModel.findAll({
-      include: [{ model: this.videoModel, as: 'videos' }]
+  async getVideos(query: VGQuery): Promise<SingleVideoGroupResponse> {
+    const currentPage = Number.isInteger(query.page) && query.page > 0 ? query.page : 1
+    const limit = Number.isInteger(query.limit) && query.limit > 0 ? query.limit : 5
+    const offset = (currentPage - 1) * limit
+
+    const { rows, count } = await this.videoGroupModel.findAndCountAll({
+      limit,
+      offset,
+      order: [['id', 'DESC']]
     })
-    if(groups.length === 0){return []}
-    return groups.map(g => VideoParser.VGroup(g))
+
+    const info = {
+      page: currentPage,
+      limit,
+      totalPages: Math.ceil(count / limit)
+    }
+
+    return {
+      info,
+      data: rows.map(g => VideoParser.SingleVGroup(g))
+    }
   }
 
   async getVideoGroup(id: string): Promise<IVideoGroup> {
@@ -147,7 +187,7 @@ export class VideoRepository implements IVideoRepository {
           description: data.description,
           productId: data.productId,
           enabled: data.enabled ?? true
-        } as any,
+        } as VideoGroupCreationAttributes,
         { transaction: t }
       )
 
@@ -160,7 +200,7 @@ export class VideoRepository implements IVideoRepository {
               name: video.name,
               youTubeId: video.youTubeId,
               enabled: video.enabled ?? true
-            } as any,
+            } as VideoCreationAttributes,
             { transaction: t }
           )
         }
@@ -184,7 +224,7 @@ export class VideoRepository implements IVideoRepository {
       throwError(ERROR_CODE.NOT_FOUND, `VideoGroup con ID ${id} no encontrado`)
     }
 
-    await group.update(data as any)
+    await group.update(data as VideoGroupUpdate)
 
     const updated = await this.videoGroupModel.findByPk(id, {
       include: [{ model: this.videoModel, as: 'videos' }]
@@ -224,7 +264,7 @@ export class VideoRepository implements IVideoRepository {
       throwError(ERROR_CODE.NOT_FOUND, `VideoGroup con ID ${videoGroupId} no encontrado`)
     }
 
-    const video = await this.videoModel.create(data as any)
+    const video = await this.videoModel.create(data as VideoCreationAttributes)
     return VideoParser.video(video)
   }
 
@@ -234,7 +274,7 @@ export class VideoRepository implements IVideoRepository {
       throwError(ERROR_CODE.NOT_FOUND, `Video con ID ${id} no encontrado`)
     }
 
-    await video.update(data as any)
+    await video.update(data as VideoUpdate)
     return VideoParser.video(video)
   }
 

@@ -1,3 +1,4 @@
+import type { FrontPage } from '../../models/frontPage.model.js'
 export interface IFrontPage {
   id: string
   title: string
@@ -17,11 +18,11 @@ export interface IFrontService {
   update(id: string, data: IFrotnUpdate): Promise<IFrontPage>
 }
 
-export const frontPageParser = (raw: any): IFrontPage => ({
-  id: String(raw.id),
+export const frontPageParser = (raw: any ): IFrontPage => ({
+  id: raw.id,
   title: raw.title,
   info_header: raw.info_header,
   description: raw.description,
   picture: raw.picture,
-  enabled: Boolean(raw.enabled)
+  enabled: raw.enabled
 })

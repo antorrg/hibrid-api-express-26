@@ -11,6 +11,8 @@ import apiKeyRouter from '../features/apiKey/apiKey.routes.js'
 import letterRouter from '../features/cartas/letter.routes.js'
 import contactRouter from '../features/contact/contact.routes.js'
 import productRouter from '../features/product/product.routes.js'
+import videoRouter from '../features/videos/videos.routes.js'
+import frontPageRouter from '../features/frontPage/frontPage.routes.js'
 
 const sessionRouter = express.Router()
 sessionRouter.use(cookieParser())
@@ -25,7 +27,7 @@ sessionRouter.use(auth.verifyCsrfToken)
 
 sessionRouter.use('/auth', authRouter)
 
-sessionRouter.use('/user', userRouter)
+sessionRouter.use('/user', isAuthenticated, userRouter)
 
 sessionRouter.use('/images', isAuthenticated, authorizeMinRole(UserRole.ADMIN), imageRouter)
 
@@ -36,5 +38,9 @@ sessionRouter.use('/apiKey', isAuthenticated, authorizeMinRole(UserRole.ADMIN), 
 sessionRouter.use('/letters', isAuthenticated, authorizeMinRole(UserRole.ADMIN), letterRouter)
 
 sessionRouter.use('/product', productRouter)
+
+sessionRouter.use('/videos', videoRouter)
+
+sessionRouter.use('/frontpage', frontPageRouter)
 
 export default sessionRouter

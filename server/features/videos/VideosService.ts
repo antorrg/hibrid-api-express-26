@@ -9,7 +9,9 @@ import type {
   VideoUpdate,
   VideoCreationAttributes,
   VideoGroupCreationAttributes,
-  VideoRepository
+  VideoRepository,
+  VGQuery,
+  SingleVideoGroupResponse
 } from './videos.types.js'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
 import { throwError, ERROR_CODE } from '../../configs/errors.js'
@@ -23,7 +25,7 @@ export class VideosService {
     return await this.repository.publicGetVideos()
   }
 
-  async publicGetVideoGroup(productId: string): Promise<PublicVGroupResponse | string> {
+  async publicGetVideoGroup(productId: string): Promise<PublicVGroupResponse> {
     return await this.repository.publicGetVideoGroup(productId)
   }
 
@@ -31,8 +33,8 @@ export class VideosService {
     return await this.repository.publicGetVideo(id)
   }
 
-  async getVideos(): Promise<IVideoGroup[]> {
-    return await this.repository.getVideos()
+  async getVideos(query: VGQuery = { page: 1, limit: 5 }): Promise<SingleVideoGroupResponse> {
+    return await this.repository.getVideos(query)
   }
 
   async getVideoGroup(id: string): Promise<IVideoGroup> {

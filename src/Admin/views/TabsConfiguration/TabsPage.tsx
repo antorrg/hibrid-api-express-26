@@ -6,13 +6,13 @@ import { toast } from '../../../shared/toast/toastManager';
 import Loader from '../../../shared/components/Loader';
 import ConfirmModal from './../../../shared/modalComponents/ConfirmModal';
 import TabsLayout from './TabsLayout';
-import Default from './TabsComponents/Default';
+import Config from '../../features/config/Config';
 import ViewImages from '../../features/images/ViewImages';
 import Products from '../../features/product/Products';
+import Users from '../../features/user/Users';
+import FrontPage from '../../features/frontPage/FrontPage';
+import Videos from '../../features/videos/Videos';
 
-// const showConfirmationDialog = (message: string): Promise<boolean> => {
-//   return Promise.resolve(window.confirm(message));
-// };
 
 const TabsPage = () => {
   const { logout } = useAuth();
@@ -80,19 +80,19 @@ const TabsPage = () => {
           <Products />
         )}
         {activeTab === 'portada' && (
-          <Default />
+          <FrontPage />
         )}
         {activeTab === 'users' && (
-          <Default />
+          <Users />
         )}
         {activeTab === 'imagenes' && (
           <ViewImages />
         )}
         {activeTab === 'videos' && (
-          <Default />
+          <Videos />
         )}
         {activeTab === 'config' && (
-          <Default />
+          <Config />
         )}
       </TabsLayout>
     </>

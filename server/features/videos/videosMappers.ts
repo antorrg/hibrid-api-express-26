@@ -29,7 +29,7 @@ export class VideoParser{
       youTubeId: raw.youTubeId
     }
   }
-  static publicVGroup = (rawInput: Parseable<PublicVGroupResponse>) => {
+  static publicVGroup = (rawInput: Parseable<PublicVGroupResponse>): PublicVGroupResponse => {
     const raw = toRaw<PublicVGroupResponse>(rawInput)
     const videosRaw = raw.videos || []
     return {
@@ -37,6 +37,7 @@ export class VideoParser{
       title: raw.title,
       description: raw.description,
       productId: raw.productId,
+      productTitle: raw.productTitle ?? '',
       videos: videosRaw.map(v => VideoParser.publicVideo(v))
     }
   }
@@ -51,7 +52,7 @@ export class VideoParser{
         
     }
   }
-  static VGroup = (rawInput: Parseable<IVideoGroup>) => {
+  static VGroup = (rawInput: Parseable<IVideoGroup>): IVideoGroup => {
     const raw = toRaw<IVideoGroup>(rawInput)
     const videosRaw = raw.videos || []
     return {
@@ -61,6 +62,16 @@ export class VideoParser{
       productId: raw.productId,
       enabled: raw.enabled,
       videos:  videosRaw.map(v => VideoParser.video(v))
+    }
+  }
+  static SingleVGroup = (rawInput: Parseable<IVideoGroup>) => {
+    const raw = toRaw<IVideoGroup>(rawInput)
+    return {
+      id: raw.id,
+      title: raw.title,
+      description: raw.description,
+      productId: raw.productId,
+      enabled: raw.enabled
     }
   }
 }

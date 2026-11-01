@@ -92,7 +92,12 @@ const Login = () => {
                     <div className="form-floating d-flex justify-content-between align-items-center">
                       <input type={showPassword ? 'text' : 'password'} className="form-control" value={input.password} name="password" placeholder="Password" onChange={(event) => handleChange(event)} />
                       <label htmlFor="floatingPassword">Password</label>
-                      <button type='button' onClick={() => { setShowPassword(!showPassword) }} className='buttonEye'>
+                      <button
+                        type='button'
+                        onClick={() => { setShowPassword(!showPassword); }}
+                        className='buttonEye'
+                        aria-label={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+                      >
                         <i className={showPassword ? 'bi-svg bi-eye-slash' : 'bi-svg bi-eye'}></i>
                       </button>
                       {error.password && <p className='errorMsg'>{error.password}</p>}

@@ -13,7 +13,7 @@ export const getFrontPage = async(req:Request, res:Response) => {
     meta: frontPageData.info_header ?? 'antorrg',
     isAuthenticated: help.getAuth(req)
   }
-  console.log('los datos', data)
+  //console.log('los datos', data)
   res.render('landings', data)
   console.timeEnd('⏱️ RenderTime api + ejs')
 }
@@ -33,7 +33,7 @@ export const getDetail = async(req:Request<{productId:string}>, res:Response) =>
   help.setStored(info_header? info_header : 'antorrg-software')
   const data = {
     url: help.url(),
-    baseUrl: `${help.baseUrl}/video/`,
+    baseUrl: `${help.baseUrl}/videos/`,
     info: { id, info_header, info_body, logo, picture, title, url, isAlive },
     variants,
     meta: help.getStored(),
@@ -77,10 +77,12 @@ export const videos = async(req:Request, res:Response) => {
 }
 export const videoProduct = async(req:Request<{id:string}>, res:Response) => {
   const { id } = req.params
-  const video = await service.videoService.publicGetVideo(id)
+  const videos = await service.videoService.publicGetVideoGroup(id)
+  //console.log(videos)
   const data = {
     url: help.url(),
-    video,
+    idProduct: id,
+    videos,
     meta: help.getStored(),
     isAuthenticated: help.getAuth(req)
   }

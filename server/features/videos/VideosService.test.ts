@@ -5,7 +5,8 @@ import type {
   IVideoGroup,
   Ivideo,
   PublicVGroupResponse,
-  PublicVideoResponse
+  PublicVideoResponse,
+  SingleVideoGroupResponse
 } from './videos.types.js'
 
 describe('VideosService', () => {
@@ -44,12 +45,27 @@ describe('VideosService', () => {
     videos: [samplePublicVideo]
   }
 
+  const paginatedVideoGroups: SingleVideoGroupResponse = {
+    info: {
+      page: 1,
+      limit: 5,
+      totalPages: 1
+    },
+    data: [{
+      id: sampleVideoGroup.id,
+      title: sampleVideoGroup.title,
+      description: sampleVideoGroup.description,
+      productId: sampleVideoGroup.productId,
+      enabled: sampleVideoGroup.enabled
+    }]
+  }
+
   beforeEach(() => {
     mockRepo = {
       publicGetVideos: vi.fn().mockResolvedValue([samplePublicVGroup]),
       publicGetVideoGroup: vi.fn().mockResolvedValue(samplePublicVGroup),
       publicGetVideo: vi.fn().mockResolvedValue(samplePublicVideo),
-      getVideos: vi.fn().mockResolvedValue([sampleVideoGroup]),
+      getVideos: vi.fn().mockResolvedValue(paginatedVideoGroups),
       getVideoGroup: vi.fn().mockResolvedValue(sampleVideoGroup),
       getVideo: vi.fn().mockResolvedValue(sampleVideo),
       videoGroupCreate: vi.fn().mockImplementation(async(data) => ({
@@ -99,8 +115,24 @@ describe('VideosService', () => {
 
     it('should return internal video groups', async() => {
       const result = await service.getVideos()
-      expect(mockRepo.getVideos).toHaveBeenCalledTimes(1)
-      expect(result).toEqual([sampleVideoGroup])
+      expect(mockRepo.getVideos).toHaveBeenCalledWith({ page: 1, limit: 5 })
+      expect(result).toEqual(paginatedVideoGroups)
+    })
+
+    it('should preserve an empty data array when no video groups exist', async() => {
+      const emptyPage: SingleVideoGroupResponse = {
+        info: {
+          page: 1,
+          limit: 5,
+          totalPages: 0
+        },
+        data: []
+      }
+      vi.mocked(mockRepo.getVideos).mockResolvedValueOnce(emptyPage)
+
+      const result = await service.getVideos()
+
+      expect(result.data).toEqual([])
     })
 
     it('should return internal video group by id', async() => {

@@ -92,6 +92,7 @@ const Variant = () => {
           <button
             type="button"
             onClick={handleBackToTabs}
+            aria-label="Ir a Productos (Tabs)"
             className="btn btn-sm btn-secondary rounded-pill d-flex align-items-center gap-2 px-3 py-2 caption-badges"
           >
             Ir a Productos
@@ -107,6 +108,7 @@ const Variant = () => {
           </Link>
           <button
             type="button"
+            aria-label="Eliminar variante"
             className="btn btn-sm btn-outline-danger rounded-pill px-3 py-2"
             onClick={() => setConfirmDelete(true)}
           >

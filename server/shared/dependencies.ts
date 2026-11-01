@@ -1,7 +1,7 @@
 import { UserRepository } from '../features/user/UserRepository.js'
 import { UserService } from '../features/user/UserService.js'
 import { fileStorageService } from './externals/images/FileStorageService.js'
-import { Image, Client, ApiKey, Letter, Product, VariantProduct, FrontPage, Video, VideoGroup } from '../configs/database.js'
+import { Image, Client, ApiKey, Letter, Product, VariantProduct, FrontPage } from '../configs/database.js'
 import { ImageRepository } from '../features/images/ImageRepository.js'
 import { ImageService } from '../features/images/ImageService.js'
 import { ApiKeyRepository } from '../features/apiKey/ApiKeyRepository.js'

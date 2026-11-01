@@ -22,7 +22,21 @@ export interface VideoGroupCreate {
     title: string
     description: string
     productId: string
-    videos: VideoCreate[]
+    videos?: VideoCreate[]
+}
+export type SingleVideoGroup = Partial<Omit<IVideoGroup, 'videos'>>
+export type VGroupInfo = {
+    page: number
+    limit: number
+    totalPages: number
+}
+export type SingleVideoGroupResponse = {
+    info: VGroupInfo,
+    data: SingleVideoGroup[]
+}
+export type VGQuery = {
+    page: number
+    limit: number
 }
 export type VideoGroupUpdate = Partial<Omit<IVideoGroup, 'id' | 'productId' | 'videos'>>
 export type VideoUpdate = Partial<Omit<Ivideo, 'id' | 'videoGroupId'>>
@@ -32,6 +46,7 @@ export interface PublicVGroupResponse {
     title: string
     description: string
     productId: string
+    productTitle?: string
     videos?: PublicVideoResponse[]
 }
 
@@ -54,9 +69,9 @@ export interface VideoGroupCreationAttributes {
 
 export interface VideoRepository {
   publicGetVideos(): Promise<PublicVGroupResponse[]>
-  publicGetVideoGroup(productId: string): Promise<PublicVGroupResponse | string>
+  publicGetVideoGroup(productId: string): Promise<PublicVGroupResponse>
   publicGetVideo(id: string): Promise<PublicVideoResponse>
-  getVideos(): Promise<IVideoGroup[]>
+  getVideos(query: VGQuery): Promise<SingleVideoGroupResponse>
   getVideoGroup(id: string): Promise<IVideoGroup>
   getVideo(id: string): Promise<Ivideo>
   videoGroupCreate(data: VideoGroupCreationAttributes): Promise<IVideoGroup>
@@ -66,4 +81,3 @@ export interface VideoRepository {
   videoUpdate(id: string, data: VideoUpdate): Promise<Ivideo>
   videoDelete(id: string): Promise<string>
 }
-
