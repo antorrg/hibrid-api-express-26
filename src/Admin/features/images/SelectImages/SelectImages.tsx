@@ -1,72 +1,59 @@
-import { Controller, type Control, type UseFormSetValue, useWatch } from "react-hook-form";
+import { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import ImageSelector from "./ImageSelector";
 import ImageUploader from "./ImageUploader";
 
-interface SelectImagesProps {
-    control: Control<any>;
-    setValue: UseFormSetValue<any>;
-    namePicture?: string;
-    nameUseImg?: string;
+export interface SelectImagesProps {
+  value?: string | null;
+  onChange: (value: string | null) => void;
+  useImg?: boolean;
+  onUseImgChange?: (useImg: boolean) => void;
+  titleField?: string;
+  id?: string;
 }
 
-const SelectImages = ({ 
-    control, 
-    setValue, 
-    namePicture = "picture", 
-    nameUseImg = "useImg" 
+const SelectImages = ({
+  value,
+  onChange,
+  useImg,
+  onUseImgChange,
+  titleField = "Imagen:",
+  id = "selectImagesSwitch",
 }: SelectImagesProps) => {
-    const useImg = useWatch({ control, name: nameUseImg, defaultValue: false });
-    return (
-        <>
-            <div className="row">
-                {useImg ? (
-                    <div className="col-md-6 mb-3">
-                        <Controller
-                            name={namePicture}
-                            control={control}
-                            render={({ field }) => (
-                                <ImageSelector value={field.value} onChange={field.onChange} />
-                            )}
-                        />
-                    </div>
-                ) : (
-                    <div className="col-md-6 mb-3">
-                        <Controller
-                            name={namePicture}
-                            control={control}
-                            render={({ field }) => (
-                                <ImageUploader
-                                    titleField="Imagen:"
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                />
-                            )}
-                        />
-                    </div>
-                )}
-            </div>
+  const [internalUseImg, setInternalUseImg] = useState<boolean>(useImg || false);
 
-            <div className="mb-3 form-check form-switch">
-                <Controller
-                    name={nameUseImg}
-                    control={control}
-                    render={({ field }) => (
-                        <Form.Check
-                            type="switch"
-                            id={`${nameUseImg}Switch`}
-                            checked={field.value || false}
-                            label="Active para elegir imagen guardada"
-                            onChange={(e) => {
-                                field.onChange(e.target.checked);
-                                setValue(namePicture, null);
-                            }}
-                        />
-                    )}
-                />
-            </div>
-        </>
-    );
+  useEffect(() => {
+    if (useImg !== undefined) {
+      setInternalUseImg(useImg);
+    }
+  }, [useImg]);
+
+  const handleSwitchChange = (checked: boolean) => {
+    setInternalUseImg(checked);
+    onChange(null);
+    onUseImgChange?.(checked);
+  };
+
+  return (
+    <div className="select-images-container mb-3">
+      <div className="mb-2 form-check form-switch">
+        <Form.Check
+          type="switch"
+          id={id}
+          checked={internalUseImg}
+          label="Elegir imagen existente de la galería"
+          className="text-body fw-normal"
+          onChange={(e) => handleSwitchChange(e.target.checked)}
+        />
+      </div>
+
+      {internalUseImg ? (
+        <ImageSelector value={value} onChange={onChange} />
+      ) : (
+        <ImageUploader titleField={titleField} value={value} onChange={onChange} />
+      )}
+    </div>
+  );
 };
 
 export default SelectImages;

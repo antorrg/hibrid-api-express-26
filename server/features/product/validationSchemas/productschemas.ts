@@ -16,6 +16,7 @@ export const create: Schema = {
   },
   logo: {
     type: 'string',
+    default: '',
     sanitize: {
       trim: true
     }
@@ -29,7 +30,7 @@ export const create: Schema = {
   },
   info_body: {
     type: 'string',
-    optional: true,
+    default: '',
     sanitize: {
       trim: true,
       escape: true
@@ -37,20 +38,16 @@ export const create: Schema = {
   },
   isAlive: {
     type: 'boolean',
-    optional: true
+    default: false
   },
   url: {
     type: 'string',
-    optional: true,
+    default: 'NoUrl',
     sanitize: {
       trim: true
     }
   },
   variants: [{
-    picture: { type: 'string' },
-    text: { type: 'string' }
-  }],
-  items: [{
     picture: { type: 'string' },
     text: { type: 'string' }
   }]

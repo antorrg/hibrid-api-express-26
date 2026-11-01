@@ -25,6 +25,11 @@ describe('uiInteractions', () => {
       <div id="navigation" class="collapse navbar-collapse"></div>
       ${renderDropdown('first')}
       ${renderDropdown('second')}
+      <img class="product-card-image" src="/sample.jpg" alt="Imagen de prueba" tabindex="0">
+      <div class="image-zoom" id="imageZoom" role="dialog" hidden>
+        <button type="button" data-image-zoom-close>Cerrar</button>
+        <img id="zoomedImage" alt="">
+      </div>
       <button id="outside">Outside</button>
     `
   })
@@ -110,5 +115,33 @@ describe('uiInteractions', () => {
 
     expect(() => click(toggle)).not.toThrow()
     expect(toggle.getAttribute('aria-expanded')).toBe('false')
+  })
+
+  it('opens the image zoom when a product image is clicked and closes it from the backdrop', () => {
+    const image = document.querySelector('.product-card-image')
+    const overlay = document.querySelector('#imageZoom')
+    const zoomedImage = document.querySelector('#zoomedImage')
+
+    click(image)
+
+    expect(overlay.hidden).toBe(false)
+    expect(zoomedImage.src).toBe(new URL('/sample.jpg', document.baseURI).href)
+    expect(zoomedImage.alt).toBe('Imagen de prueba')
+
+    click(overlay)
+
+    expect(overlay.hidden).toBe(true)
+    expect(document.activeElement).toBe(image)
+  })
+
+  it('closes the image zoom on Escape', () => {
+    const image = document.querySelector('.product-card-image')
+    const overlay = document.querySelector('#imageZoom')
+
+    click(image)
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+
+    expect(overlay.hidden).toBe(true)
+    expect(document.activeElement).toBe(image)
   })
 })

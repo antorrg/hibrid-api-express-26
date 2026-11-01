@@ -1,5 +1,35 @@
 const collapseToggleSelector = '[data-ui-toggle="collapse"]'
 const dropdownToggleSelector = '[data-ui-toggle="dropdown"]'
+const productImageSelector = '.product-card-image'
+let zoomTrigger = null
+
+const openImageZoom = (image) => {
+  const overlay = document.getElementById('imageZoom')
+  const zoomedImage = document.getElementById('zoomedImage')
+  const closeButton = overlay?.querySelector('[data-image-zoom-close]')
+
+  if (!overlay || !zoomedImage || !closeButton) return
+
+  zoomTrigger = image
+  zoomedImage.src = image.currentSrc || image.src
+  zoomedImage.alt = image.alt
+  overlay.hidden = false
+  document.body.classList.add('image-zoom-open')
+  closeButton.focus()
+}
+
+const closeImageZoom = () => {
+  const overlay = document.getElementById('imageZoom')
+  const zoomedImage = document.getElementById('zoomedImage')
+
+  if (!overlay || overlay.hidden) return
+
+  overlay.hidden = true
+  document.body.classList.remove('image-zoom-open')
+  if (zoomedImage) zoomedImage.removeAttribute('src')
+  zoomTrigger?.focus()
+  zoomTrigger = null
+}
 
 const getTarget = (toggle) => {
   const selector = toggle.getAttribute('data-ui-target')
@@ -17,6 +47,22 @@ const closeDropdown = (dropdown) => {
 
 document.addEventListener('click', (event) => {
   if (!(event.target instanceof Element)) return
+
+  const productImage = event.target.closest(productImageSelector)
+  if (productImage) {
+    openImageZoom(productImage)
+    return
+  }
+
+  const imageZoom = document.getElementById('imageZoom')
+  if (
+    imageZoom &&
+    !imageZoom.hidden &&
+    (event.target === imageZoom || event.target.closest('[data-image-zoom-close]'))
+  ) {
+    closeImageZoom()
+    return
+  }
 
   const collapseToggle = event.target.closest(collapseToggleSelector)
   if (collapseToggle) {
@@ -57,7 +103,20 @@ document.addEventListener('click', (event) => {
 })
 
 document.addEventListener('keydown', (event) => {
+  if (event.target instanceof Element && event.target.matches(productImageSelector) &&
+      (event.key === 'Enter' || event.key === ' ')) {
+    event.preventDefault()
+    openImageZoom(event.target)
+    return
+  }
+
   if (event.key !== 'Escape') return
+
+  const imageZoom = document.getElementById('imageZoom')
+  if (imageZoom && !imageZoom.hidden) {
+    closeImageZoom()
+    return
+  }
 
   const openDropdown = document.querySelector('.dropdown.show')
   if (!openDropdown) return

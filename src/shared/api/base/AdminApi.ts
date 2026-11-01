@@ -2,13 +2,16 @@ import { HttpClient, type HttpRequestConfig } from './HttpClient';
 import { toast } from '../../toast/toastManager';
 
 export type NotifyFn = {
-  success(message: string): void;
-  error(message: string): void;
+  success(message: string, title?: string): void;
+  error(message: string, title?: string): void;
+  warning?(message: string, title?: string): void;
+  info?(message: string, title?: string): void;
 };
 
 export interface ApiResponse<T> {
   ok?: boolean;
   data?: T;
+  message?: string;
 }
 
 export interface ExecuteOptions<T> {
@@ -21,8 +24,10 @@ export interface ExecuteOptions<T> {
 }
 
 const defaultNotify: NotifyFn = {
-  success: (msg) => toast.success(msg, 'Acción exitosa'),
-  error: (msg) => toast.error(msg, 'Error'),
+  success: (msg, title = 'Acción exitosa') => toast.success(msg, title),
+  error: (msg, title = 'Error') => toast.error(msg, title),
+  warning: (msg, title = 'Advertencia') => toast.warning(msg, title),
+  info: (msg, title = 'Información') => toast.info(msg, title),
 };
 
 export class AdminApi {
@@ -62,8 +67,16 @@ export class AdminApi {
         data = rawResult as T;
       }
 
-      if (hasMessage && successMessage) {
-        this.notify.success(successMessage);
+      if (hasMessage) {
+        const messageToShow =
+          successMessage ||
+          (typeof rawResult === 'object' && rawResult !== null && 'message' in rawResult
+            ? String((rawResult as ApiResponse<T>).message)
+            : undefined);
+
+        if (messageToShow) {
+          this.notify.success(messageToShow);
+        }
       }
 
       success?.(data);

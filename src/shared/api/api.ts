@@ -1,8 +1,15 @@
 import { HttpClient, subscribeUnauthorized, subscribeForbidden } from './base/HttpClient';
 import { AdminApi } from './base/AdminApi';
+import { toast } from '../toast/toastManager';
 
 export const basePath = import.meta.env.VITE_BASE_PATH;
-console.log('soy la base ', basePath)
+//console.log('soy la base ', basePath)
+
+// Notificación global de permisos denegados o detección de CSRF (403 Forbidden)
+subscribeForbidden((error) => {
+  const message = error?.message || 'No tienes permisos para realizar esta acción';
+  toast.error(message, 'Acceso denegado');
+});
 
 // Cliente HTTP base configurado para el prefijo de la API (/api/v1)
 export const httpClient = new HttpClient({

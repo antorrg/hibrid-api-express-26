@@ -55,7 +55,7 @@ export class ProductService {
       id: productId,
       title: data.title,
       picture: data.picture,
-      logo: data.logo,
+      logo: data.logo || data.picture,
       info_header: data.info_header,
       info_body: data.info_body ?? null,
       isAlive: data.isAlive ?? false,

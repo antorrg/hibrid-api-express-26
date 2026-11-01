@@ -92,4 +92,30 @@ describe('ErrorBoundary Component', () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  it('debería utilizar clases adaptables para modos claro y oscuro', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(
+      <ErrorBoundary>
+        <ProblemChild shouldThrow={true} />
+      </ErrorBoundary>
+    );
+
+    const title = screen.getByText('Ocurrió un inconveniente');
+    expect(title.className).toContain('text-body-emphasis');
+    expect(title.className).not.toContain('text-dark');
+
+    const paragraph = screen.getByText(/Se ha producido un error inesperado/i);
+    expect(paragraph.className).toContain('text-body-secondary');
+
+    const toggleBtn = screen.getByText('Ver detalles técnicos ▼');
+    fireEvent.click(toggleBtn);
+
+    const errorDetails = screen.getByText(/Test rendering crash error/i).closest('div');
+    expect(errorDetails?.className).toContain('bg-body-secondary');
+    expect(errorDetails?.className).not.toContain('bg-light');
+
+    consoleErrorSpy.mockRestore();
+  });
 });

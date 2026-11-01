@@ -7,12 +7,32 @@
   --bs-secondary-text-emphasis: #2b2f32 !important;
   --bs-primary-border-subtle: #9eeaf5 !important;
   --bs-secondary-border-subtle: #c4c8cb !important;
+  --bs-tertiary-bg:hsla(26, 20%, 93%, 0.986)!important;
   --ar-background-image: url("https://firebasestorage.googleapis.com/v0/b/misitioweb-d59d3.appspot.com/o/imagesApi%2Fbackground-ligth.webp?alt=media&token=56cc6c90-3e08-4f2e-8141-1885c282eaf0");
 }
 [data-bs-theme=dark] {
   --bs-primary-border-subtle: #054851 !important;
   --bs-secondary-border-subtle: #41464b !important;
+  --bs-tertiary-bg:hsla(211, 51%, 11%, 0.5)!important;
   --ar-background-image: url("https://firebasestorage.googleapis.com/v0/b/misitioweb-d59d3.appspot.com/o/imagesApi%2Fbackground-dark.webp?alt=media&token=8880fd28-c185-4f4d-bfa2-7d4bd6516de4");
+}
+[data-bs-theme=light] .caption-badges {
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.37); /* Fondo semitransparente */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(10px); /* Efecto de desenfoque para Safari */
+    padding: 0.2rem;
+    border-radius: 5px; /* Bordes redondeados */
+    color: black;  /*Asegúrate de que el texto sea visible */
+}
+[data-bs-theme=dark] .caption-badges {
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.014); /* Fondo semitransparente */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(10px); /* Efecto de desenfoque para Safari */
+    padding: 0.2rem;
+    border-radius: 5px; /* Bordes redondeados */
+   /* color: black; /* Asegúrate de que el texto sea visible */
 }
 /* Establecer backgrounds con imagenes y colores cambiantes segun modo*/
 .backgroundOnlyImage {
@@ -92,7 +112,7 @@ min-width: 80vw;
 [data-bs-theme="light"] .coverBackPages {
   margin-top:0;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.5); /* Fondo semitransparente */
+  background: hsla(0, 0%, 100%, 0.5); /* Fondo semitransparente */
   backdrop-filter: blur(5px); /* Efecto de desenfoque */
   -webkit-backdrop-filter: blur(10px); /* Efecto de desenfoque para Safari */
   padding: 0.2rem;

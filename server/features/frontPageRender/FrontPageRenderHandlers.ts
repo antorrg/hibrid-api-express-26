@@ -29,11 +29,12 @@ export const getProducts = async(req:Request, res:Response) => {
 }
 export const getDetail = async(req:Request<{productId:string}>, res:Response) => {
   const { productId } = req.params
-  const { id, info_header, info_body, logo, picture, title, variants } = await service.productService.getPublicById(productId)
+  const { id, info_header, info_body, logo, picture, title, url, isAlive, variants } = await service.productService.getPublicById(productId)
   help.setStored(info_header? info_header : 'antorrg-software')
   const data = {
     url: help.url(),
-    info: { id, info_header, info_body, logo, picture, title },
+    baseUrl: `${help.baseUrl}/video/`,
+    info: { id, info_header, info_body, logo, picture, title, url, isAlive },
     variants,
     meta: help.getStored(),
     isAuthenticated: help.getAuth(req)

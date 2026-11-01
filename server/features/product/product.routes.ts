@@ -6,6 +6,7 @@ import { isAuthenticated, authorizeMinRole, UserRole } from '../../shared/auth/a
 import { productService } from '../../shared/dependencies.js'
 import { ProductController } from './ProductController.js'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
+import { sanitizeRichText, sanitizeArrayRichText } from '../../shared/middlewares/sanitizeRichText.js'
 
 const controller = new ProductController(productService)
 const productRouter = express.Router()
@@ -35,6 +36,7 @@ productRouter.post(
   isAuthenticated,
   authorizeMinRole(UserRole.ADMIN),
   Validator.validateBody(create),
+  sanitizeArrayRichText(['text'], ['variants', 'items']),
   controller.create
 )
 
@@ -68,6 +70,7 @@ productRouter.post(
   isAuthenticated,
   authorizeMinRole(UserRole.ADMIN),
   Validator.validateBody(itemCreate),
+  sanitizeRichText(['text']),
   controller.createVariant
 )
 
@@ -77,6 +80,7 @@ productRouter.put(
   authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   Validator.validateBody(itemUpdate),
+  sanitizeRichText(['text']),
   controller.updateVariant
 )
 
@@ -87,38 +91,4 @@ productRouter.delete(
   Validator.paramId('id', UuidHandler.uuidRegex),
   controller.deleteVariant
 )
-
-// Alias para /item
-productRouter.get(
-  '/item/:id',
-  isAuthenticated,
-  Validator.paramId('id', UuidHandler.uuidRegex),
-  controller.getVariant
-)
-
-productRouter.post(
-  '/item',
-  isAuthenticated,
-  authorizeMinRole(UserRole.ADMIN),
-  Validator.validateBody(itemCreate),
-  controller.createVariant
-)
-
-productRouter.put(
-  '/item/:id',
-  isAuthenticated,
-  authorizeMinRole(UserRole.ADMIN),
-  Validator.paramId('id', UuidHandler.uuidRegex),
-  Validator.validateBody(itemUpdate),
-  controller.updateVariant
-)
-
-productRouter.delete(
-  '/item/:id',
-  isAuthenticated,
-  authorizeMinRole(UserRole.ADMIN),
-  Validator.paramId('id', UuidHandler.uuidRegex),
-  controller.deleteVariant
-)
-
 export default productRouter

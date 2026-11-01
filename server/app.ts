@@ -24,7 +24,11 @@ app.use(cors(corsConfig))
 app.set('view engine', 'ejs')
 app.set('views', viewPath)
 app.use(express.static(staticPath))
+if (envConfig.Status !== 'production') {
+  app.use(`/${envConfig.BaseTestUrl}`, express.static(path.resolve(envConfig.BaseTestUrl)))
+}
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(eh.jsonFormat)
 app.use(mvcRoutes)
 app.use(mainRouter)

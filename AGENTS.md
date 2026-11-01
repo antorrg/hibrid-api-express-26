@@ -10,4 +10,12 @@
 ### Repository Layer
 - **Persistence only**: Repositories must NOT form entity objects, assign business defaults, or generate IDs.
 - **Pure database interaction**: The Repository receives already-formed entity data/payloads and executes database queries, transactions, or ORM operations.
-- **Mapping**: The Repository delegates mapping between raw database records/models and DTOs to dedicated parsers (e.g., `ProductParser`, `VariantParser`).
+- **Mapping**: Repositories delegate mapping between raw database records/models and DTOs to dedicated parsers (e.g., `ProductParser`, `VariantParser`).
+
+## Shell & Execution Environment
+- **Node & PNPM Environment**: Node.js and `pnpm` are managed via NVM in non-interactive subshells. Always ensure NVM is loaded before running node/pnpm commands:
+  ```bash
+  export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && pnpm <command>
+  ```
+- **Package Manager**: Use `pnpm` instead of `npm`.
+

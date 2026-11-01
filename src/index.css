@@ -4,7 +4,8 @@
 @import './generalStyles/loader.css';
 @import './generalStyles/modalService.css';
 @import './generalStyles/carousel.css';
-@import './generalStyles//icons.css';
+@import './generalStyles/icons.css';
+@import './generalStyles/richText.css';
 
 
 .caption-nav {
@@ -16,6 +17,7 @@
     border-radius: 5px; /* Bordes redondeados */
     color: black; /* Asegúrate de que el texto sea visible */
   }
+
   .caption-title {
     z-index: 10;
     max-width: 60vw;
@@ -41,4 +43,55 @@
     align-items: flex-start;
     align-content: center;
     height: fit-content; 
+  }
+
+  .product-card-image {
+    width: 100%;
+    max-width: 22rem;
+    object-fit: cover;
+    object-position: center;
+    cursor: zoom-in;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .product-card-image:hover {
+    transform: scale(1.02);
+  }
+
+  .image-zoom {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    background: rgba(0, 0, 0, 0.9);
+    cursor: zoom-out;
+  }
+
+  .image-zoom[hidden] {
+    display: none;
+  }
+
+  .image-zoom-content {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .image-zoom-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 2.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  body.image-zoom-open {
+    overflow: hidden;
   }

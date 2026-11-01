@@ -18,3 +18,6 @@
 .bi-eye       { mask-image: url('/icons/eye.svg');       -webkit-mask-image: url('/icons/eye.svg');}
 .bi-eye-slash { mask-image: url('/icons/eye-slash.svg'); -webkit-mask-image: url('/icons/eye-slash.svg');}
 .bi-whatsapp  { mask-image: url('/icons/whatsapp.svg');  -webkit-mask-image: url('/icons/whatsapp.svg');}
+.bi-arrow-left  { mask-image: url('/icons/arrow-left.svg');  -webkit-mask-image: url('/icons/arrow-left.svg');}
+.bi-arrow-right  { mask-image: url('/icons/arrow-right.svg');  -webkit-mask-image: url('/icons/arrow-right.svg');}
+.bi-arrow-repeat { mask-image: url('/icons/arrow-repeat.svg');  -webkit-mask-image: url('/icons/arrow-repeat.svg');}

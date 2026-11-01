@@ -12,4 +12,6 @@ export const getAuth = ( req: Request ): boolean => req.session? true : false
 
 export const url = envConfig.Redirection
 
+export const baseUrl = envConfig.BaseUrl
+
 export const uriWhatsApp=`https://wa.me/${envConfig.WhatsAppNumber}?text=${encodeURIComponent(envConfig.WhatsAppMessage)}`

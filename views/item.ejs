@@ -4,14 +4,15 @@
   <div class="container-sm">
     <div class="modal modal-tour position-static d-block modal-custom py-5">
       <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
+        <div class="modal-content backgroundElements">
+          <div style="align-items:start; text-align: start;">
+          <a class="btn btn-md btn-outline-secondary rounded-pill ms-2 mt-3 mx-auto w-15" href="/detalles/<%= variant.productId %>"><i class="bi-svg bi-arrow-left fs-4 me-3"></i>Volver</a>
+        </div>
           <div class="modal-body p-5 text-center">
-            <img class="d-block mx-auto mb-4 img-fluid" src="<%= item.img %>" alt="image not found">
-            <p class="text-muted">
-              <strong>Texto:</strong>
-              <%= item.text %>
-            </p>
-            <a class="btn btn-sm btn-secondary mt-3 mx-auto w-15" href="/detalles/<%= item.ProductId %>">Cerrar</a>
+            <img class="d-block mx-auto mb-4 img-fluid" src="<%= variant.picture %>" alt="image not found">
+            <div class="text-muted">
+              <%- variant.text %>
+            </div>
           </div>
         </div>
       </div>

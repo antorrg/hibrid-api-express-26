@@ -4,38 +4,10 @@ import { useAuth } from '../Auth/AuthContext/AuthContext'
 import { useNavigate } from 'react-router';
 import { validLogin } from './loginComponents/validate';
 import Loader from '../shared/components/Loader';
+import AlertLogin from './AlertLogin';
 import { toast } from '../shared/toast/toastManager';
 
-// Componente visual de Loading respetando el renderizado condicional
-const Loading = () => <Loader fullScreen={false} scale={0.7} text="Aguarde un momento..." />;
 
-// Componente visual AlertLogin para cuando ya hay sesión iniciada
-const AlertLogin = ({ logout, isLoading, setIsLoading }: { logout: () => Promise<void>; isLoading: boolean; setIsLoading: (val: boolean) => void }) => {
-  const navigate = useNavigate();
-  return (
-    <div className="text-center p-2">
-      <h2 className="h4 mb-3">Ya has iniciado sesión</h2>
-      <p className="text-secondary mb-4">Puedes acceder al panel de administración o cerrar la sesión activa.</p>
-      <div className="d-flex justify-content-center gap-2">
-        <button type="button" className="btn btn-primary px-3" onClick={() => navigate('/admin')}>
-          Ir al Panel
-        </button>
-        <button
-          type="button"
-          className="btn btn-outline-danger px-3"
-          onClick={async () => {
-            setIsLoading(true);
-            await logout();
-            setIsLoading(false);
-          }}
-          disabled={isLoading}
-        >
-          Cerrar sesión
-        </button>
-      </div>
-    </div>
-  );
-};
 
 const Login = () => {
   const inicio = basePath ? basePath : '/';
@@ -75,7 +47,6 @@ const Login = () => {
     if (isLoading || permit) return;
     setIsLoading(true);
     try {
-      console.log(input)
       const response = await login(input);
       if (response) {
         setInput({
@@ -98,12 +69,13 @@ const Login = () => {
     <>
       <div className="backgroundPages">
         <div className='coverBack'>
-          {isLoading ?
-            <Loading />
-            :
             <div className="container-md modal-content backgroundFormColor loginContainer rounded-4 shadow">
               <div className="form-signin m-auto p-3">
-                {authenticated ?
+            {isLoading ?
+              <Loader fullScreen={false} text="Aguarde un momento..."/>
+              :
+              <>  
+              {authenticated ?
                   <AlertLogin logout={logout} isLoading={isLoading} setIsLoading={setIsLoading} />
                   :
                   <form onSubmit={handleSubmit}>
@@ -131,9 +103,10 @@ const Login = () => {
                     <br></br>
                   </form>
                 }
+                </>
+              }
               </div>
             </div>
-          }
         </div>
       </div>
     </>

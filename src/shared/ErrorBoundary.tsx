@@ -53,9 +53,9 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="vh-100 d-flex flex-column justify-content-center align-items-center meraki-back-color px-3">
+        <div className="vh-100 d-flex flex-column justify-content-center align-items-center bg-body-tertiary px-3">
           <div
-            className="card border-0 shadow-sm p-4 p-md-5 text-center"
+            className="card border border-secondary-subtle shadow-sm p-4 p-md-5 text-center bg-body"
             style={{ maxWidth: '600px', width: '100%', borderRadius: '15px' }}
           >
             <div className="mb-4 text-warning">
@@ -70,8 +70,8 @@ export class ErrorBoundary extends Component<Props, State> {
                 <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
               </svg>
             </div>
-            <h1 className="h3 fw-bold text-dark mb-2">Ocurrió un inconveniente</h1>
-            <p className="text-secondary mb-4">
+            <h1 className="h3 fw-bold text-body-emphasis mb-2">Ocurrió un inconveniente</h1>
+            <p className="text-body-secondary mb-4">
               Se ha producido un error inesperado en la interfaz. La aplicación sigue activa y puedes reintentar la acción o volver al inicio.
             </p>
 
@@ -95,17 +95,17 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="mt-3">
               <button
                 type="button"
-                className="btn btn-link text-decoration-none text-muted small p-0"
+                className="btn btn-link text-decoration-none text-body-secondary small p-0"
                 onClick={this.toggleDetails}
               >
                 {this.state.showDetails ? 'Ocultar detalles técnicos ▲' : 'Ver detalles técnicos ▼'}
               </button>
 
               {this.state.showDetails && (
-                <div className="mt-3 text-start bg-light p-3 rounded border text-monospace" style={{ fontSize: '0.8rem', maxHeight: '200px', overflowY: 'auto' }}>
+                <div className="mt-3 text-start bg-body-secondary p-3 rounded border border-secondary-subtle font-monospace" style={{ fontSize: '0.8rem', maxHeight: '200px', overflowY: 'auto' }}>
                   <strong className="text-danger">{this.state.error?.toString()}</strong>
                   {this.state.errorInfo?.componentStack && (
-                    <pre className="mt-2 text-muted mb-0" style={{ whiteSpace: 'pre-wrap' }}>
+                    <pre className="mt-2 text-body-secondary mb-0" style={{ whiteSpace: 'pre-wrap' }}>
                       {this.state.errorInfo.componentStack}
                     </pre>
                   )}

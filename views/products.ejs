@@ -14,8 +14,9 @@
     </div>
   </section>
 
-  <div class="album py-5">
+  <div class="album py-2">
     <div class="container backgroundElements">
+      <a class="btn btn-md btn-outline-secondary rounded-pill ms-4 mt-2 mb-3" href="/"><i class="bi-svg bi-arrow-left fs-4 me-2"></i>Volver</a>
       <%
         const chunk = (arr, size) => {
           return arr.reduce((acc, _, i) => {
@@ -27,15 +28,15 @@
             return acc;
           }, []);
         };
-        const rows = chunk(info, 3);
+        const rows = chunk(products, 3);
       %>
 
       <% rows.forEach(row => { %>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           <% row.forEach(info => { %>
-            <div class="col">
+            <div class="col mb-3">
               <div class="card shadow-sm">
-                <img class="card-img-top" src="<%= info.landing %>" alt="Card image" style="max-width: 25rem; height:15rem; object-fit:cover; object-position:center;">
+                <img class="card-img-top" src="<%= info.picture %>" alt="Card image" style="max-width: 25rem; height:15rem; object-fit:cover; object-position:center;">
                 <div class="card-body">
                   <p class="h5 card-text"><%= info.title %></p>
                   <div class="d-flex justify-content-between align-items-center">
@@ -50,7 +51,7 @@
         </div>
       <% }) %>
 
-      <a class="btn btn-sm btn-outline-secondary ms-4 mt-2 mb-3" href="/">Volver</a>
+    
     </div>
   </div>
 </main>

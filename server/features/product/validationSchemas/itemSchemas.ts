@@ -4,8 +4,7 @@ export const itemCreate: Schema = {
   text: {
     type: 'string',
     sanitize: {
-      trim: true,
-      escape: true
+      trim: true
     }
   },
   picture: {
@@ -25,8 +24,7 @@ export const itemUpdate: Schema = {
     type: 'string',
     optional: true,
     sanitize: {
-      trim: true,
-      escape: true
+      trim: true
     }
   },
   picture: {

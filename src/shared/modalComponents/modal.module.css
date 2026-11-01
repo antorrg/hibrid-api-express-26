@@ -4,28 +4,58 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.55);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease-out;
 }
 
 .modalCard {
-  background-color: #ffffff;
+  background-color: var(--bs-body-bg, #ffffff);
+  color: var(--bs-body-color, #212529);
+  border: 1px solid var(--bs-border-color-translucent, rgba(0, 0, 0, 0.15));
   border-radius: 16px;
   padding: 32px;
   max-width: 90%;
-  width: 450px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 440px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  color: #333;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+:global([data-bs-theme="dark"]) .modalCard {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.modalCard h2 {
+  color: var(--bs-heading-color, inherit);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.modalCard p {
+  color: var(--bs-secondary-color, inherit);
+  font-size: 1rem;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 25px;
+  width: 100%;
 }
 
 @keyframes fadeIn {
@@ -36,7 +66,7 @@
 @keyframes scaleUp {
   from { 
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.85);
   }
   to { 
     opacity: 1;

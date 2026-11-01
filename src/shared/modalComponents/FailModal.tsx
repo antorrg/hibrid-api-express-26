@@ -1,4 +1,5 @@
 import Modal from './Modal'
+import style from './modal.module.css'
 
 type FailModalProps = {
   isOpen: boolean
@@ -19,13 +20,15 @@ const FailModal = ({
     <Modal isOpen={isOpen} onClose={onAccept}>
       <h2>{title}</h2>
       <p>{message}</p>
-      <button 
-        className="btn btn-sm btn-danger" 
-        onClick={onAccept}
-        style={{ marginTop: '20px' }}
-      >
-        {buttonText}
-      </button>
+      <div className={style.actions}>
+        <button 
+          type="button"
+          className="btn btn-sm btn-danger" 
+          onClick={onAccept}
+        >
+          {buttonText}
+        </button>
+      </div>
     </Modal>
   )
 }

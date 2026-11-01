@@ -1,18 +1,24 @@
 <%- include('./partials/header') %>
 
 <main>
-  <section class="py-5 text-center container backgroundElements">
+  <section class="py-5 container backgroundElements">
+    <a class="btn btn-md btn-outline-secondary rounded-pill mt-3 mb-3 align-items-start" href="/detalles"><i class="bi-svg bi-arrow-left fs-4 me-3"></i>Volver</a>
+    <div class="text-center mt-0">
     <div class="row py-lg-5">
       <div class="col-lg-6 col-md-8 mx-auto">
         <h1 class="fw-light">Proyecto <%= info.title %></h1>
    
-        <img class="img-fluid mb-3" src="<%= info.landing %>" alt="Not Found">
+        <img class="img-fluid mb-3" src="<%= info.picture %>" alt="Not Found">
         <p class="lead text-muted"><%= info.info_body %></p>
         <p>
-          <a class="btn btn-sm btn-secondary my-2 me-2" href="/detalles">Volver</a>
-          <a class="btn btn-sm btn-primary my-2 me-2" href="<%= info.url %>" target="_blank">Ir al sitio web</a>
+          <% if (info.isAlive === true){ %>
+          <a class="btn btn-sm btn-primary my-2 me-2" href="<%= info.url %>" target="blank">Ir al sitio web<i class="bi-svg bi-arrow-right fs-4 ms-1"></i></a>
+          <% } else { %> 
+          <a class="btn btn-sm btn-primary my-2 me-2" href="<%= baseUrl + info.id %>">Ver video<i class="bi-svg bi-arrow-right fs-4 ms-1"></i></a>
+          <% } %>
         </p>
       </div>
+    </div>
     </div>
   </section>
 
@@ -34,11 +40,11 @@
       <% rows.forEach(row => { %>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-sm-3 g-3">
           <% row.forEach(item => { %>
-            <div class="col mt-2 mb-2">
+            <div class="col mt-2 mb-4">
               <div class="card shadow-sm">
-                <img class="card-img-top" src="<%= item.img %>" alt="Card image" style="max-width: 25rem; height:15rem; object-fit:cover; object-position:center;">
+                <img class="card-img-top" src="<%= item.picture %>" alt="Card image" style="max-width: 25rem; height:15rem; object-fit:cover; object-position:center;">
                 <div class="card-body">
-                  <p class="card-text"><%= item.text %></p>
+                  <p class="card-text text-truncate"><%- item.text %></p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                       <a class="btn btn-sm btn-outline-secondary" href="/detalles/item/<%= item.id %>">Ver más</a>

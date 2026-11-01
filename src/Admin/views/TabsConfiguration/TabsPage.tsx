@@ -4,18 +4,22 @@ import { useNavigate, useLocation } from 'react-router';
 import { useAuth } from '../../../Auth/AuthContext/AuthContext';
 import { toast } from '../../../shared/toast/toastManager';
 import Loader from '../../../shared/components/Loader';
+import ConfirmModal from './../../../shared/modalComponents/ConfirmModal';
 import TabsLayout from './TabsLayout';
 import Default from './TabsComponents/Default';
+import ViewImages from '../../features/images/ViewImages';
+import Products from '../../features/product/Products';
 
-const showConfirmationDialog = (message: string): Promise<boolean> => {
-  return Promise.resolve(window.confirm(message));
-};
+// const showConfirmationDialog = (message: string): Promise<boolean> => {
+//   return Promise.resolve(window.confirm(message));
+// };
 
 const TabsPage = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [logoutAction, setLogoutAction] = useState(false)
 
   // Lee el parámetro "tab" de la URL. Si no existe, usa un valor predeterminado.
   const queryParams = new URLSearchParams(location.search);
@@ -25,7 +29,7 @@ const TabsPage = () => {
 
   const handleTabChange = (selectedTab: string) => {
     if (selectedTab === 'videos') {
-      navigate('/admin?tab=videos&subtab=facebook');
+      navigate('/admin?tab=videos');
     } else {
       navigate(`/admin?tab=${selectedTab}`);
     }
@@ -34,36 +38,46 @@ const TabsPage = () => {
 
   const landing = basePath ? basePath : '/';
 
-  const sessionCleaner = async () => {
-    const confirmed = await showConfirmationDialog(
-      "¿Está seguro de cerrar sesión?"
-    );
-    if (confirmed) {
-      if (isLoading) return; // Prevenir múltiples clics
-      setIsLoading(true);
-      try {
-        await logout();
-        toast.success("Sesión cerrada");
-        window.location.href = landing;
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
+  const handleOpenLogoutModal = () => {
+    setLogoutAction(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    setLogoutAction(false);
+    if (isLoading) return; // Prevenir múltiples clics
+    setIsLoading(true);
+    try {
+      await logout();
+      toast.success("Sesión cerrada");
+      window.location.href = landing;
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <>
+      <ConfirmModal
+        isOpen={logoutAction}
+        onConfirm={handleConfirmLogout}
+        onCancel={() => setLogoutAction(false)}
+        title="Cerrar sesión"
+        message="¿Está seguro de cerrar sesión?"
+        confirmText="Sí, cerrar sesión"
+        cancelText="Cancelar"
+      />
+
       {isLoading ? <Loader fullScreen={false} scale={0.7} text="Cerrando sesión..." /> : null}
       <TabsLayout
         activeTab={activeTab}
         handleTabChange={handleTabChange}
-        sessionCleaner={sessionCleaner}
+        sessionCleaner={handleOpenLogoutModal}
         isLoading={isLoading}
       >
         {activeTab === 'producto' && (
-          <Default />
+          <Products />
         )}
         {activeTab === 'portada' && (
           <Default />
@@ -72,7 +86,7 @@ const TabsPage = () => {
           <Default />
         )}
         {activeTab === 'imagenes' && (
-          <Default />
+          <ViewImages />
         )}
         {activeTab === 'videos' && (
           <Default />
