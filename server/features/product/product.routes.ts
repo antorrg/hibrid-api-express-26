@@ -11,29 +11,20 @@ import { sanitizeRichText, sanitizeArrayRichText } from '../../shared/middleware
 const controller = new ProductController(productService)
 const productRouter = express.Router()
 
-// --- Rutas Públicas ---
-productRouter.get('/public', controller.scopedGet)
-productRouter.get('/public/:id', Validator.paramId('id', UuidHandler.uuidRegex), controller.scopedGetById)
-productRouter.get('/public/variant/:id', Validator.paramId('id', UuidHandler.uuidRegex), controller.scopedGetVariant)
-productRouter.get('/public/item/:id', Validator.paramId('id', UuidHandler.uuidRegex), controller.scopedGetVariant)
-
 // --- Rutas de Productos ---
 productRouter.get(
   '/',
-  //isAuthenticated,
   controller.getAll
 )
 
 productRouter.get(
   '/:id',
-  //isAuthenticated,
   Validator.paramId('id', UuidHandler.uuidRegex),
   controller.getById
 )
 
 productRouter.post(
   '/',
-  isAuthenticated,
   authorizeMinRole(UserRole.ADMIN),
   Validator.validateBody(create),
   sanitizeArrayRichText(['text'], ['variants', 'items']),
@@ -42,7 +33,6 @@ productRouter.post(
 
 productRouter.put(
   '/:id',
-  isAuthenticated,
   authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   Validator.validateBody(update),
@@ -51,7 +41,6 @@ productRouter.put(
 
 productRouter.delete(
   '/:id',
-  isAuthenticated,
   authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   controller.delete
@@ -60,14 +49,12 @@ productRouter.delete(
 // --- Rutas de Variantes / Ítems ---
 productRouter.get(
   '/variant/:id',
-  isAuthenticated,
   Validator.paramId('id', UuidHandler.uuidRegex),
   controller.getVariant
 )
 
 productRouter.post(
   '/variant',
-  isAuthenticated,
   authorizeMinRole(UserRole.ADMIN),
   Validator.validateBody(itemCreate),
   sanitizeRichText(['text']),
@@ -76,7 +63,6 @@ productRouter.post(
 
 productRouter.put(
   '/variant/:id',
-  isAuthenticated,
   authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   Validator.validateBody(itemUpdate),
@@ -86,7 +72,6 @@ productRouter.put(
 
 productRouter.delete(
   '/variant/:id',
-  isAuthenticated,
   authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   controller.deleteVariant

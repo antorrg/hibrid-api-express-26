@@ -10,10 +10,8 @@ export const getFrontPage = async(req:Request, res:Response) => {
     url: help.url(),
     frontPage: frontPageData,
     products: await service.productService.getPublicAll(),
-    meta: frontPageData.info_header ?? 'antorrg',
-    isAuthenticated: help.getAuth(req)
+    meta: frontPageData.info_header ?? 'antorrg'
   }
-  //console.log('los datos', data)
   res.render('landings', data)
   // console.timeEnd('⏱️ RenderTime api + ejs')
 }
@@ -22,8 +20,7 @@ export const getProducts = async(req:Request, res:Response) => {
   const data = {
     url: help.url(),
     products,
-    meta: products[0].info_header,
-    isAuthenticated: help.getAuth(req)
+    meta: products[0].info_header
   }
   res.render('products', data)
 }
@@ -36,8 +33,7 @@ export const getDetail = async(req:Request<{productId:string}>, res:Response) =>
     baseUrl: `${help.baseUrl}/videos/`,
     info: { id, info_header, info_body, logo, picture, title, url, isAlive },
     variants,
-    meta: help.getStored(),
-    isAuthenticated: help.getAuth(req)
+    meta: help.getStored()
   }
   res.render('details', data)
 }
@@ -47,8 +43,7 @@ export const getVariants = async(req:Request<{id:string}>, res:Response) => {
   const data = {
     url: help.url(),
     variant,
-    meta: help.getStored(),
-    isAuthenticated: help.getAuth(req)
+    meta: help.getStored()
   }
   res.render('item', data)
 }
@@ -57,7 +52,6 @@ export const contact = async(req:Request, res:Response) => {
   const data = {
     url: help.url(),
     meta: help.getStored() || 'Contacto - Antorrg',
-    isAuthenticated: help.getAuth(req),
     csrfToken,
     uriWhatsApp: help.uriWhatsApp
   }
@@ -69,8 +63,7 @@ export const videos = async(req:Request, res:Response) => {
   const data = {
     url: help.url(),
     videos,
-    meta: help.getStored(),
-    isAuthenticated: help.getAuth(req)
+    meta: help.getStored()
   }
   return res.render('videos', data)
 
@@ -83,8 +76,7 @@ export const videoProduct = async(req:Request<{id:string}>, res:Response) => {
     url: help.url(),
     idProduct: id,
     videos,
-    meta: help.getStored(),
-    isAuthenticated: help.getAuth(req)
+    meta: help.getStored()
   }
   return res.render('videos', data)
 }
@@ -93,8 +85,7 @@ export const about = async(req:Request, res:Response) => {
   const data = {
     url: help.url(),
     data: about,
-    meta: help.getStored(),
-    isAuthenticated: help.getAuth(req)
+    meta: help.getStored()
   }
   return res.render('about', data)
 }

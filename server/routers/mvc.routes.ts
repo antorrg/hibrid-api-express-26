@@ -42,19 +42,3 @@ mvcRoutes.get(
   }
 )
 export default mvcRoutes
-/*
-mvcRouter.get('/videos/:id',
-  controller.getVideos
-)
-
-mvcRouter.get('/login', 
-  controller.getReact);
-
-mvcRouter.get('/admin', 
-  controller.getReact);
-
-mvcRouter.get('/detalles/false', (req, res, next)=>{ //eslint-disable-line
-        // res.status(404).send('Not Found')
-         res.render('error', { message: 'Not Found', status: 404});
-       });
-      */

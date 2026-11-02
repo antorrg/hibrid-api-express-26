@@ -29,14 +29,16 @@ function App() {
   return (
     <AuthProvider>
       <div className={`app ${theme}-mode`}>
-        <div style={{ alignItems: 'center' }}>
-          <button 
-            onClick={toggleTheme} 
-            className="btn btn-sm btn-outline-secondary mt-4"
-          >
-            {theme === 'light' ? '🌙 ' : '☀️'}
-          </button> 
-        </div>
+        {import.meta.env.DEV && (
+          <div style={{ alignItems: 'center' }}>
+            <button
+              onClick={toggleTheme}
+              className="btn btn-sm btn-outline-secondary mt-4"
+            >
+              {theme === 'light' ? '🌙 ' : '☀️'}
+            </button>
+          </div>
+        )}
         <RouterProvider router={router} />
       </div>
     </AuthProvider>

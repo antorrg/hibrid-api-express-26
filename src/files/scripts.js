@@ -1,4 +1,5 @@
 import './uiInteractions.js';
+import { adminLinkViewer } from './adminLinkViewer.js';
 import { colorModes } from './colorModes.js';
 import modalService from './modalService.mjs';
 import {
@@ -12,7 +13,7 @@ import {
 
 document.addEventListener('DOMContentLoaded', () => {
   colorModes();
-
+  adminLinkViewer('logged_in', { fallback: 'login' })
   // Selección del formulario
   const contactForm = document.getElementById('sendEmail');
   if (contactForm) {
