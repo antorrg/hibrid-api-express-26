@@ -13,6 +13,7 @@ import contactRouter from '../features/contact/contact.routes.js'
 import productRouter from '../features/product/product.routes.js'
 import videoRouter from '../features/videos/videos.routes.js'
 import frontPageRouter from '../features/frontPage/frontPage.routes.js'
+import aboutRouter from '../features/about/about.routes.js'
 
 const sessionRouter = express.Router()
 sessionRouter.use(cookieParser())
@@ -37,10 +38,12 @@ sessionRouter.use('/apiKey', isAuthenticated, authorizeMinRole(UserRole.ADMIN), 
 
 sessionRouter.use('/letters', isAuthenticated, authorizeMinRole(UserRole.ADMIN), letterRouter)
 
-sessionRouter.use('/product', productRouter)
+sessionRouter.use('/product', isAuthenticated, productRouter)
 
-sessionRouter.use('/videos', videoRouter)
+sessionRouter.use('/videos', isAuthenticated, videoRouter)
 
-sessionRouter.use('/frontpage', frontPageRouter)
+sessionRouter.use('/frontpage', isAuthenticated, frontPageRouter)
+
+sessionRouter.use('/about', isAuthenticated, aboutRouter)
 
 export default sessionRouter

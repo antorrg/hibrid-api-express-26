@@ -41,7 +41,7 @@ export const setCsrfToken = (req: Request, res: Response, next: NextFunction): v
   const token = csrfTokens.create(secret)
   res.cookie('XSRF-TOKEN', token, {
     httpOnly: false, // debe ser legible por el cliente
-    secure: envConfig.Status === 'production',
+    secure: envConfig.CookieSecure,
     sameSite: 'lax'
   })
   next()

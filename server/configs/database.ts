@@ -22,6 +22,7 @@ const Client = modelsDefinition.Client(sequelize)
 const ApiKey = modelsDefinition.ApiKey(sequelize)
 const Letter = modelsDefinition.Letter(sequelize)
 const Image = modelsDefinition.Image(sequelize)
+const About = modelsDefinition.About(sequelize)
 
 Product.hasMany(VariantProduct, {
   foreignKey: 'productId',
@@ -111,6 +112,7 @@ export {
   Client, 
   ApiKey,
   Letter,
+  About,
   sequelize,
   startUp,
   closeDatabase

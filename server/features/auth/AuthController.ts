@@ -28,7 +28,7 @@ export class AuthController {
     // Cookie visible para el cliente (sincronizada a 30m con la sesión)
     res.cookie('logged_in', 'true', {
       httpOnly: false,
-      secure: envConfig.Status === 'production',
+      secure: envConfig.CookieSecure,
       sameSite: 'lax',
       maxAge: 1000 * 60 * 30 // 30m
     })
@@ -41,7 +41,7 @@ export class AuthController {
     res.clearCookie('app.sid', {
       path: '/',
       httpOnly: true,
-      secure: envConfig.Status === 'production',
+      secure: envConfig.CookieSecure,
       sameSite: 'lax'
     })
     res.clearCookie('logged_in')

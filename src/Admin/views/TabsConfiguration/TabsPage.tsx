@@ -11,6 +11,7 @@ import ViewImages from '../../features/images/ViewImages';
 import Products from '../../features/product/Products';
 import Users from '../../features/user/Users';
 import FrontPage from '../../features/frontPage/FrontPage';
+import About from '../../features/about/About';
 import Videos from '../../features/videos/Videos';
 
 
@@ -56,7 +57,7 @@ const TabsPage = () => {
       setIsLoading(false);
     }
   };
-
+  const setAction = ()=> handleTabChange('producto')
   return (
     <>
       <ConfirmModal
@@ -82,6 +83,9 @@ const TabsPage = () => {
         {activeTab === 'portada' && (
           <FrontPage />
         )}
+        {activeTab === 'about' && (
+          <About />
+        )}
         {activeTab === 'users' && (
           <Users />
         )}
@@ -89,7 +93,7 @@ const TabsPage = () => {
           <ViewImages />
         )}
         {activeTab === 'videos' && (
-          <Videos />
+          <Videos setAction={setAction}/>
         )}
         {activeTab === 'config' && (
           <Config />

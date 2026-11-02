@@ -21,7 +21,7 @@ export const sessionMiddleware = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure: envConfig.Status === 'production',
+    secure: envConfig.CookieSecure,
     sameSite: 'lax',
     maxAge: 1000 * 60 * 30 // 30m
   }

@@ -13,17 +13,25 @@ import mvcRoutes from './routers/mvc.routes.js'
 const viewPath = envConfig.Status === 'production' 
   ? path.resolve('dist/views')
   : path.resolve('views')
-const staticPath = envConfig.Status === 'production' 
-  ? path.resolve('dist/assets')
-  : path.resolve('src')
+
 const app = express()
 app.locals.getAssetPath = getAssetPath
+if (envConfig.Status === 'production') {
+  app.set('trust proxy', 1)
+}
 if(envConfig.Status === 'development'){
   app.use(morgan('dev'))}
 app.use(cors(corsConfig))
 app.set('view engine', 'ejs')
 app.set('views', viewPath)
-app.use(express.static(staticPath))
+
+if (envConfig.Status === 'production') {
+  app.use(express.static(path.resolve('dist')))
+  app.use(express.static(path.resolve('dist/assets')))
+} else {
+  app.use(express.static(path.resolve('src')))
+  app.use(express.static(path.resolve('public')))
+}
 if (envConfig.Status !== 'production') {
   app.use(`/${envConfig.BaseTestUrl}`, express.static(path.resolve(envConfig.BaseTestUrl)))
 }

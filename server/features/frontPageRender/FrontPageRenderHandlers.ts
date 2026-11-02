@@ -4,7 +4,7 @@ import * as help from './helpers.js'
 import { HMACToken } from '../../shared/auth/HMACToken.js'
 
 export const getFrontPage = async(req:Request, res:Response) => {
-  console.time('⏱️ RenderTime api + ejs')
+  //console.time('⏱️ RenderTime api + ejs')
   const frontPageData =  await service.frontPageService.get()
   const data = {
     url: help.url(),
@@ -15,7 +15,7 @@ export const getFrontPage = async(req:Request, res:Response) => {
   }
   //console.log('los datos', data)
   res.render('landings', data)
-  console.timeEnd('⏱️ RenderTime api + ejs')
+  // console.timeEnd('⏱️ RenderTime api + ejs')
 }
 export const getProducts = async(req:Request, res:Response) => {
   const products = await service.productService.getPublicAll()
@@ -89,8 +89,10 @@ export const videoProduct = async(req:Request<{id:string}>, res:Response) => {
   return res.render('videos', data)
 }
 export const about = async(req:Request, res:Response) => {
+  const about = await service.aboutService.get()
   const data = {
     url: help.url(),
+    data: about,
     meta: help.getStored(),
     isAuthenticated: help.getAuth(req)
   }

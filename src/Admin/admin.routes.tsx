@@ -1,22 +1,30 @@
+import { lazy, Suspense } from "react";
 import { type RouteObject } from "react-router";
-import Admin from "./views/Admin";
-import TabsPage from "./views/TabsConfiguration/TabsPage";
+import Loader from "../shared/components/Loader";
 
-import Product from "./features/product/Product";
-import Variant from "./features/product/Variant";
-import CreateProduct from "./features/product/components/CreateProduct";
-import EditProduct from "./features/product/components/EditProduct";
-import EditVariant from "./features/product/components/EditVariant";
-import User from "./features/user/User";
-import CreateFrontPage from "./features/frontPage/components/CreateFrontPage";
-import EditFrontPage from "./features/frontPage/components/EditFrontPage";
-import CreateVideoGroup from "./features/videos/components/CreateVideoGroup";
-import VideoGroupDetail from "./features/videos/components/VideoGroupDetail";
+const Admin = lazy(() => import("./views/Admin"));
+const TabsPage = lazy(() => import("./views/TabsConfiguration/TabsPage"));
+const Product = lazy(() => import("./features/product/Product"));
+const Variant = lazy(() => import("./features/product/Variant"));
+const CreateProduct = lazy(() => import("./features/product/components/CreateProduct"));
+const EditProduct = lazy(() => import("./features/product/components/EditProduct"));
+const EditVariant = lazy(() => import("./features/product/components/EditVariant"));
+const User = lazy(() => import("./features/user/User"));
+const CreateFrontPage = lazy(() => import("./features/frontPage/components/CreateFrontPage"));
+const EditFrontPage = lazy(() => import("./features/frontPage/components/EditFrontPage"));
+const CreateAbout = lazy(() => import("./features/about/components/CreateAbout"));
+const EditAbout = lazy(() => import("./features/about/components/EditAbout"));
+const CreateVideoGroup = lazy(() => import("./features/videos/components/CreateVideoGroup"));
+const VideoGroupDetail = lazy(() => import("./features/videos/components/VideoGroupDetail"));
 
 export const adminRouter: RouteObject[] = [
   {
     path: "/admin",
-    element: <Admin />,
+    element: (
+      <Suspense fallback={<Loader fullScreen text="Cargando panel de administración..." />}>
+        <Admin />
+      </Suspense>
+    ),
     children: [
       {
         index: true,
@@ -53,6 +61,14 @@ export const adminRouter: RouteObject[] = [
       {
         path: "frontpage/edit",
         element: <EditFrontPage />,
+      },
+      {
+        path: "about/create",
+        element: <CreateAbout />,
+      },
+      {
+        path: "about/edit",
+        element: <EditAbout />,
       },
       {
         path: "videos/create/:productId",

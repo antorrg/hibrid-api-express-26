@@ -7,7 +7,10 @@ import Loader from '../../../shared/components/Loader';
 import ConfirmModal from '../../../shared/modalComponents/ConfirmModal';
 import type { SingleVideoGroup } from './videosTypes';
 
-const Videos: React.FC = () => {
+type VideosProps = {
+  setAction: ()=> void
+}
+const Videos: React.FC<VideosProps> = ({setAction}) => {
   const {
     videoGroups,
     paginationInfo,
@@ -59,12 +62,12 @@ const Videos: React.FC = () => {
           </p>
         </div>
         <div>
-          <Link
-            to="/admin?tab=producto"
+          <button
+            onClick={setAction}
             className="btn btn-sm btn-outline-primary px-3 py-2 fw-semibold rounded-pill d-flex align-items-center gap-1"
           >
             <span>+ Crear videos desde Productos</span>
-          </Link>
+          </button>
         </div>
       </div>
 

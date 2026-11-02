@@ -41,15 +41,19 @@ export default defineConfig({
         scripts: path.resolve('src/files/scripts.js'), // Script adicional para Pug
       },
       output: {
-        entryFileNames: `assets/[name].js`,
-        chunkFileNames: `assets/[name].js`,
+        entryFileNames: `assets/[name]-[hash].js`,
+        chunkFileNames: `assets/[name]-[hash].js`,
         assetFileNames: ({ name }) => {
           if (/\.(woff2?|eot|ttf|otf)$/.test(name ?? '')) {
             // Coloca las fuentes en assets/fonts
             return 'assets/fonts/[name].[ext]';
           }
-          return 'assets/[name].[ext]';
+          return 'assets/[name]-[hash].[ext]';
         },
+        manualChunks: {
+          'bootstrap': ['react-bootstrap'],
+          'vendor': ['react', 'react-dom', 'react-router'],
+        }
       },
     },
   },

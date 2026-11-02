@@ -30,10 +30,10 @@ mvcRoutes.get(
   '/login', 
   handler.getReactPage
 )
-// mvcRoutes.get(
-//   '/admin', 
-//   handler.getReactPage
-// )
+mvcRoutes.get(
+  '/admin', 
+  handler.getReactPage
+)
 mvcRoutes.get(
   '/detalles/false/:id', 
   (req, res, next)=>{ //eslint-disable-line

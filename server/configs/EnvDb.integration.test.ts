@@ -28,7 +28,8 @@ describe('EnvDb test', () => {
         db.Image.findAll(),
         db.Client.findAll(), 
         db.ApiKey.findAll(),
-        db.Letter.findAll()
+        db.Letter.findAll(),
+        db.About.findAll()
       ]
       const registers = await Promise.all(models)
       registers.forEach((model) => {

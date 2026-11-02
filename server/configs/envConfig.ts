@@ -64,7 +64,8 @@ const envConfig = {
   WhatsAppNumber: getStringEnv('WHATS_APP_NUMBER'),
   WhatsAppMessage: getStringEnv('WHATS_APP_MESSAGE'),
 
-  BaseUrl: getStringEnv('VITE_BASE_PATH')
+  BaseUrl: getStringEnv('VITE_BASE_PATH'),
+  CookieSecure: NODE_ENV === 'production' && process.env.COOKIE_SECURE !== 'false'
 }
 export default envConfig
   

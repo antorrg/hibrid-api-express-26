@@ -28,6 +28,11 @@ const TabsLayout = ({ activeTab, handleTabChange, sessionCleaner, isLoading, chi
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
+                <Nav.Link onClick={() => handleTabChange('about')} active={activeTab === 'about'}>
+                  Acerca de
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
                 <Nav.Link onClick={() => handleTabChange('users')} active={activeTab === 'users'}>
                   Usuarios
                 </Nav.Link>

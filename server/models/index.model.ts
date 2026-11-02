@@ -10,6 +10,7 @@ import Image from './images.model.js'
 import Client from './client.model.js'
 import ApiKey from './apiKey.model.js'
 import Letter from './letters.model.js'
+import About from './about.model.js'
 
 export default {
   User,
@@ -23,5 +24,6 @@ export default {
   Image,
   Client, 
   ApiKey,
-  Letter
+  Letter,
+  About
 }
