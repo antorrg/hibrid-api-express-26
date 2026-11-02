@@ -6,6 +6,9 @@ export const validateEmail = (input) => {
   else if (!/\S+@\S+\.\S+/.test(input.email)) errors.email = 'Email es invalido';
   if (!input.subject) errors.subject = 'Asunto es requerido';
   if (!input.message) errors.message = 'Mensaje es requerido';
+  if (input.message.includes('<script>')) errors.message = 'Mensaje es invalido';
+  if (input.message.length < 20) errors.message = 'Mensaje es muy corto';
+  if (input.message.length > 1000) errors.message = 'Mensaje es muy largo';
   return errors;
 };
 

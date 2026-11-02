@@ -13,7 +13,7 @@ import {
 
 document.addEventListener('DOMContentLoaded', () => {
   colorModes();
-  adminLinkViewer('logged_in', { fallback: 'login' })
+  adminLinkViewer('logged_in')
   // Selección del formulario
   const contactForm = document.getElementById('sendEmail');
   if (contactForm) {
