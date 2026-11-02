@@ -36,8 +36,10 @@ dist/
 # ---------------------------------------
 # Assets (uploads temporales)
 # ---------------------------------------
-servarAssets/uploads/*
-!servarAssets/uploads/.gitkeep
+serverAssets/uploads/*
+!serverAssets/uploads/.gitkeep
+serverAssets/fixtures/*
+!serverAssets/fixtures/.gitkeep
 data/
 
 # ---------------------------------------
