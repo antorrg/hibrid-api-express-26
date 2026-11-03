@@ -38,6 +38,9 @@ export class ProductService {
   async getPublicById(id: string): Promise<IProductPublicDetail> {
     return await this.repository.getPublicProductById(id)
   }
+  async getmetaInfo(id:string): Promise<string>{
+    return await this.repository.getmetaInfo(id)
+  }
 
   async create(data: CreateProductDTO): Promise<IProduct> {
     const productId = UuidHandler.createUuid()

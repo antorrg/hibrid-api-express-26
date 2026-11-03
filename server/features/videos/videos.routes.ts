@@ -3,6 +3,7 @@ import { Validator } from 'req-valid-express'
 import { VideoController } from './VideosController.js'
 import { videoService } from '../../shared/dependencies.js'
 import { UuidHandler } from '../../shared/utils/UuidHandler.js'
+import { authorizeMinRole, UserRole } from '../../shared/auth/authMiddlewares.js'
 import * as sch from './video.schemas.js'
 
 const controller = new VideoController(videoService)
@@ -25,33 +26,39 @@ videoRouter.get(
 )
 videoRouter.post(
   '/',
+  authorizeMinRole(UserRole.ADMIN),
   Validator.validateBody(sch.videoGroupCreate),
   controller.createGroup
 )
 videoRouter.post(
   '/video',
+  authorizeMinRole(UserRole.ADMIN),
   Validator.validateBody(sch.videoCreate),
   controller.createVideo
 )
 videoRouter.put(
   '/:id',
+  authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   Validator.validateBody(sch.videoGroupUpdate),
   controller.updateGroup
 )
 videoRouter.patch(
   '/:id',
+  authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   Validator.validateBody(sch.videoUpdate),
   controller.updateVideo
 )
 videoRouter.delete(
   '/:id',
+  authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   controller.deleteGroup
 )
 videoRouter.delete(
   '/:id/video',
+  authorizeMinRole(UserRole.ADMIN),
   Validator.paramId('id', UuidHandler.uuidRegex),
   controller.deleteVideo
 )

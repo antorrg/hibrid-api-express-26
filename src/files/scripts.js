@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (contactForm) {
     const initialInput = {
       email: '',
-      subject: '',
+      issue: '',
       message: '',
     };
 
@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Habilita o deshabilita el botón de enviar
       const permit =
         !input.email.trim() ||
-        !input.subject.trim() ||
+        !input.issue.trim() ||
         !input.message.trim() ||
         error.email ||
-        error.subject ||
+        error.issue||
         error.message;
       document.getElementById('submitButton').disabled = permit;
     };
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.ok) {
           input = { ...initialInput };
           document.getElementById('email').value = '';
-          document.getElementById('subject').value = '';
+          document.getElementById('issue').value = '';
           document.getElementById('message').value = '';
           const websiteEl = document.getElementById('website');
           if (websiteEl) websiteEl.value = '';
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Agrega eventos a los campos interactivos y botones
     document.getElementById('email').addEventListener('input', handleOnChange);
-    document.getElementById('subject').addEventListener('input', handleOnChange);
+    document.getElementById('issue').addEventListener('input', handleOnChange);
     document.getElementById('message').addEventListener('input', handleOnChange);
     const submitButton = document.getElementById('submitButton');
     submitButton.addEventListener('click', handleSubmit);

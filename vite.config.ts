@@ -37,7 +37,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        index: path.resolve('src/main.jsx'), // Punto de entrada React
+        index: path.resolve('src/main.tsx'), // Punto de entrada React
         scripts: path.resolve('src/files/scripts.js'), // Script adicional para Pug
       },
       output: {

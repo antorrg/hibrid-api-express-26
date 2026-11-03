@@ -134,6 +134,7 @@ export interface IProductRepository {
   getAllProducts(): Promise<IProductSummary[]>
   getPublicProducts(): Promise<IProductPublicSummary[]>
   getProductById(id: string): Promise<IProduct>
+  getmetaInfo(id:string): Promise<string>
   getPublicProductById(id: string): Promise<IProductPublicDetail>
   createProduct(data: ProductCreationAttributes): Promise<IProduct>
   updateProduct(id: string, data: UpdateProductDTO): Promise<IProduct>

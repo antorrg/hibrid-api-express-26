@@ -1,10 +1,11 @@
 import modalService from "./modalService.mjs";
 
 export const validateEmail = (input) => {
-  const errors = { email: '', subject: '', message: '' };
+  const errors = { email: '', issue: '', message: '' };
   if (!input.email) errors.email = 'Email es requerido';
   else if (!/\S+@\S+\.\S+/.test(input.email)) errors.email = 'Email es invalido';
-  if (!input.subject) errors.subject = 'Asunto es requerido';
+  if (!input.issue) errors.issue = 'Asunto es requerido';
+  if (input.issue.length < 4) errors.issue = 'Asunto muy corto';
   if (!input.message) errors.message = 'Mensaje es requerido';
   if (input.message.includes('<script>')) errors.message = 'Mensaje es invalido';
   if (input.message.length < 20) errors.message = 'Mensaje es muy corto';

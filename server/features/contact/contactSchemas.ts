@@ -8,7 +8,7 @@ export const emailSchema : Schema = {
       lowercase:true
     }
   },
-  subject: {
+  issue: {
     type: 'string',
     sanitize:{
       trim:true

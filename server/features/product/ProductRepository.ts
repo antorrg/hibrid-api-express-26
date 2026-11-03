@@ -52,6 +52,20 @@ export class ProductRepository implements IProductRepository {
     }
     return ProductParser.toDetailDTO(product)
   }
+  async getmetaInfo(id:string): Promise<string>{
+    const  [meta] = await sequelize.query(`
+      SELECT info_header
+      FROM "${this.productModel.tableName}"
+      WHERE enabled = true
+      AND id = :id
+      LIMIT 1
+      `,{
+      replacements: { id },
+      type: QueryTypes.SELECT
+    })
+    const metaInfo = Object.values(meta).join()
+    return metaInfo
+  }
 
   async getPublicProductById(id: string): Promise<IProductPublicDetail> {
     const products = await sequelize.query<RawProduct>(`

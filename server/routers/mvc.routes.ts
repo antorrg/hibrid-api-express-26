@@ -1,5 +1,6 @@
 import express from 'express'
 import * as handler from '../features/frontPageRender/FrontPageRenderHandlers.js'
+import { ERROR_CODE, middError } from '../configs/errors.js'
 
 const mvcRoutes = express.Router()
 mvcRoutes.get('/', handler.getFrontPage)
@@ -37,8 +38,9 @@ mvcRoutes.get(
 mvcRoutes.get(
   '/detalles/false/:id', 
   (req, res, next)=>{ //eslint-disable-line
+    return next(middError(ERROR_CODE.INTERNAL_ERROR, 'Error forzado'))
   // res.status(404).send('Not Found')
-    res.render('error', { message: 'Error forzado', status: 404 })
+    //res.render('error', { message: 'Error forzado', status: 404 })
   }
 )
 export default mvcRoutes

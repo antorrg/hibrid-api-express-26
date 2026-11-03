@@ -68,3 +68,24 @@ export const verifyContactToken = (req: Request, res: Response, next: NextFuncti
 
   next()
 }
+
+const validateEmail = (input:{ email:string, issue:string, message:string }):string| null => {
+  const errors:string[] = []
+  if (!input.email) errors.push('Email es requerido')
+  else if (!/\S+@\S+\.\S+/.test(input.email)) errors.push('Email es invalido') 
+  if (!input.issue) errors.push('Asunto es requerido') 
+  if (!input.message) errors.push('Mensaje es requerido')  
+  if (input.message.includes('<script>')) errors.push('Mensaje es invalido')  
+  if (input.message.length < 20) errors.push('Mensaje es muy corto')
+  if (input.message.length > 1000) errors.push('Mensaje es muy largo') 
+  return errors.length > 0? errors.join(', ') : null
+}
+
+export const verifyText = (req: Request, res: Response, next: NextFunction): void => {
+  const { email, issue, message } = req.body
+  const invalidEmail = validateEmail({ email, issue, message })
+  if(invalidEmail !== null){
+    return next(middError(ERROR_CODE.INVALID_INPUT, invalidEmail))
+  }
+  next()
+}

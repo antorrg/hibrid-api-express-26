@@ -102,6 +102,12 @@ describe('ProductRepository Integration Tests', () => {
       expect(variant).not.toHaveProperty('enabled')
       expect(variant).not.toHaveProperty('createdAt')
     })
+    it('should return public info_header by id', async() => {
+      const all = await repo.getAllProducts()
+      const meta = await repo.getmetaInfo(all[0].id)
+      expect(meta).toBe('Header')
+    })
+    
 
     it('should return public variant by id with id, productId, text, picture', async() => {
       const all = await repo.getAllProducts()
