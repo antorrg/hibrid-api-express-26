@@ -13,7 +13,7 @@ describe('Contact Route with HMACToken Protection', () => {
       .post('/api/v1/contact')
       .send({
         email: 'test@example.com',
-        subject: 'Consulta',
+        issue: 'Consulta',
         message: 'Hola mundo'
       })
 
@@ -25,7 +25,7 @@ describe('Contact Route with HMACToken Protection', () => {
       .post('/api/v1/contact')
       .send({
         email: 'test@example.com',
-        subject: 'Consulta',
+        issue: 'Consulta',
         message: 'Hola mundo',
         _csrf: 'fake.token.signature'
       })
@@ -40,8 +40,8 @@ describe('Contact Route with HMACToken Protection', () => {
       .post('/api/v1/contact')
       .send({
         email: 'test@example.com',
-        subject: 'Consulta',
-        message: 'Hola mundo',
+        issue: 'Consulta',
+        message: 'Hola mundo-1234567890-1234567890',
         _csrf: token
       })
 
@@ -57,8 +57,8 @@ describe('Contact Route with HMACToken Protection', () => {
       .set('x-csrf-token', token)
       .send({
         email: 'test@example.com',
-        subject: 'Consulta',
-        message: 'Hola mundo'
+        issue: 'Consulta',
+        message: 'Hola mundo-1234567890-1234567890'
       })
 
     expect(res.status).toBe(200)

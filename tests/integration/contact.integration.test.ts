@@ -58,7 +58,7 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
         .post('/api/v1/contact')
         .send({
           email: 'usuario.real@example.com',
-          subject: 'Presupuesto de desarrollo',
+          issue: 'Presupuesto de desarrollo',
           message: 'Hola, quisiera cotizar una aplicación web.',
           _csrf: csrfToken,
           website: ''
@@ -75,8 +75,8 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
         .post('/api/v1/contact')
         .send({
           email: 'atacante@badsite.com',
-          subject: 'Intento de CSRF sin token',
-          message: 'Mensaje malicioso'
+          issue: 'Intento de CSRF sin token',
+          message: 'Mensaje malicioso con más de veinte caracteres'
         })
 
       expect(res.status).toBe(401)
@@ -88,8 +88,8 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
         .post('/api/v1/contact')
         .send({
           email: 'atacante@badsite.com',
-          subject: 'Intento con token adulterado',
-          message: 'Mensaje malicioso',
+          issue: 'Intento con token adulterado',
+          message: 'Mensaje malicioso con más de veinte caracteres',
           _csrf: 'fakeNonce12345678.1700000000000.badSignatureHex'
         })
 
@@ -104,7 +104,7 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
 
       const payload = {
         email: 'usuario@example.com',
-        subject: 'Primer envío',
+        issue: 'Primer envío',
         message: 'Contenido del mensaje',
         _csrf: csrfToken
       }
@@ -128,7 +128,7 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
         .set('x-csrf-token', csrfToken)
         .send({
           email: 'header.user@example.com',
-          subject: 'Token en cabecera',
+          issue: 'Token en cabecera',
           message: 'Enviado con x-csrf-token'
         })
 
@@ -146,7 +146,7 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
         .post('/api/v1/contact')
         .send({
           email: 'spam.bot@marketing-leads.com',
-          subject: 'Compre nuestros servicios de SEO',
+          issue: 'Compre nuestros servicios de SEO',
           message: 'Excelente oferta por tiempo limitado',
           _csrf: csrfToken,
           website: 'https://spam-marketing-leads.com' // <-- Honeypot activado
@@ -165,7 +165,7 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
         .post('/api/v1/contact')
         .send({
           email: 'usuario.legitimo@example.com',
-          subject: 'Consulta normal',
+          issue: 'Consulta normal',
           message: 'Espacios en blanco no activan el honeypot',
           _csrf: csrfToken,
           website: '   '
@@ -184,8 +184,8 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
         .post('/api/v1/contact')
         .send({
           email: 123456, // Tipo inválido
-          subject: 'Consulta',
-          message: 'Mensaje de prueba',
+          issue: 'Consulta',
+          message: 'Mensaje de prueba con más de veinte caracteres',
           _csrf: csrfToken
         })
 
@@ -201,7 +201,7 @@ describe('Contact Integration Tests (Frontend SSR + Backend Protection)', () => 
         .send({
           email: 'usuario@example.com',
           _csrf: csrfToken
-          // Faltan subject y message
+          // Faltan issue y message
         })
 
       expect(res.status).toBe(400)

@@ -26,24 +26,39 @@ export const createAbout: Schema = {
 export const updateAbout: Schema = {
   title: {
     type: 'string',
+    optional: true,
+    default: undefined,
     sanitize: {
       trim: true
     }
   },
   text: {
     type: 'string',
+    optional: true,
+    default: undefined,
     sanitize: {
       trim: true
     }
   },
   picture: {
-    type: 'string'
+    type: 'string',
+    optional: true,
+    default: undefined
   },
   imgShow: {
-    type: 'boolean'
+    type: 'boolean',
+    optional: true,
+    default: undefined
   },
   enabled: {
-    type: 'boolean'
+    type: 'boolean',
+    optional: true,
+    default: undefined
+  },
+  saver: {
+    type: 'boolean',
+    optional: true,
+    default: undefined
   }
 }
 

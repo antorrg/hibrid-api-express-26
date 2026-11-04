@@ -1,15 +1,22 @@
 import { rateLimit, type Options } from 'express-rate-limit'
 import { middError, ERROR_CODE } from '../../configs/errors.js'
 
-type RateLimitConfig = Pick<Options, 'windowMs' | 'limit'> & {
-  message?: string | { message?: string; [key: string]: unknown }
-}
+type RateLimitConfig =
+  Pick<Options, 'windowMs' | 'limit'> &
+  Partial<
+    Pick<Options, 'skip' | 'skipSuccessfulRequests' | 'skipFailedRequests'>
+  > & {
+    message?: string | { message?: string; [key: string]: unknown }
+  }
 
 export function createRateLimiter({
   windowMs,
   limit,
+  skipSuccessfulRequests = false,
+  skipFailedRequests = false,
+  skip,
   message
-}: RateLimitConfig) {
+}: Partial<RateLimitConfig>) {
   const resolvedMessage = typeof message === 'string'
     ? message
     : (typeof message === 'object' && message !== null && typeof message.message === 'string')
@@ -18,7 +25,10 @@ export function createRateLimiter({
 
   return rateLimit({
     windowMs,
-    limit,
+    limit,  
+    skipSuccessfulRequests,
+    skipFailedRequests,
+    skip,
     standardHeaders: 'draft-8',
     legacyHeaders: false,
     handler: (req, _res, next) => {

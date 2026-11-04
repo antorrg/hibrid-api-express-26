@@ -8,7 +8,8 @@
 "types": [
   "node",
   "express",
-  "multer"
+  "multer",
+  "express-rate-limit"
 ],
 "resolveJsonModule": true,
 "noEmit": false,
@@ -25,8 +26,7 @@
   },
   "include": [
     "server/**/*.ts",
-    "server/@types/**/*.d.ts", "server/Shared/Swagger/schemas/tools/generateSchema.ts", "tests/helpers/serverAuth.help.ts", "tests/integration/auth.integration.test.ts",
-      
+    "server/@types/**/*.d.ts", "tests/helpers/serverAuth.help.ts", "tests/integration/auth.integration.test.ts",
   ],
   "exclude": [
     "node_modules",
