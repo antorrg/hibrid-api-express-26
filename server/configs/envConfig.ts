@@ -36,6 +36,21 @@ const getStringEnv = (value:string):string => {
   if (!key) { throw new Error(`La variable de entorno ${value} es requerida`) }
   return key
 }
+const corsReaderEnv = (): string[] => {
+  const origins: string[] = []
+
+  for (const [name, value] of Object.entries(process.env)) {
+    if (name.startsWith('PUBLIC_API_') && value?.trim()) {
+      const items = value
+        .split(',')
+        .map(v => v.trim())
+        .filter(Boolean)
+      origins.push(...items)
+    }
+  }
+
+  return origins
+}
 const envConfig = {
   Port: getNumberEnv('PORT'),
   Status: NODE_ENV,
@@ -65,7 +80,9 @@ const envConfig = {
   WhatsAppMessage: getStringEnv('WHATS_APP_MESSAGE'),
 
   BaseUrl: getStringEnv('VITE_BASE_PATH'),
-  CookieSecure: NODE_ENV === 'production' && process.env.COOKIE_SECURE !== 'false'
+  CookieSecure: NODE_ENV === 'production' && process.env.COOKIE_SECURE !== 'false',
+
+  PublicApiAllowed: corsReaderEnv()
 }
 export default envConfig
   

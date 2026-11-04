@@ -15,7 +15,7 @@ userRouter.get(
 )
 userRouter.get(
   '/:userId',
-  Validator.paramId('userId',UuidHandler.uuidValidator),
+  Validator.paramId('userId',UuidHandler.uuidRegex),
   controller.getById
 )
 userRouter.post(
@@ -26,7 +26,7 @@ userRouter.post(
 )
 userRouter.put(
   '/:userId',
-  Validator.paramId('userId',UuidHandler.uuidValidator),
+  Validator.paramId('userId',UuidHandler.uuidRegex),
   UserMiddleware.protectedProfile,
   Validator.validateBody(sch.updateProfile),
   controller.updateProfile
@@ -34,7 +34,7 @@ userRouter.put(
 userRouter.delete(
   '/:userId',
   authorizeMinRole(UserRole.ADMIN),
-  Validator.paramId('userId',UuidHandler.uuidValidator),
+  Validator.paramId('userId',UuidHandler.uuidRegex),
   controller.delete
 )
 userRouter.post(
@@ -46,7 +46,7 @@ userRouter.post(
 userRouter.patch(
   '/:userId/assign-status',
   authorizeMinRole(UserRole.ADMIN),
-  Validator.paramId('userId',UuidHandler.uuidValidator),
+  Validator.paramId('userId',UuidHandler.uuidRegex),
   Validator.validateBody(sch.upgradeUser),
   controller.userUpgrade
 )

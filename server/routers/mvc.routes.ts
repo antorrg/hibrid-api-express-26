@@ -35,12 +35,5 @@ mvcRoutes.get(
   '/admin', 
   handler.getReactPage
 )
-mvcRoutes.get(
-  '/detalles/false/:id', 
-  (req, res, next)=>{ //eslint-disable-line
-    return next(middError(ERROR_CODE.INTERNAL_ERROR, 'Error forzado'))
-  // res.status(404).send('Not Found')
-    //res.render('error', { message: 'Error forzado', status: 404 })
-  }
-)
+
 export default mvcRoutes

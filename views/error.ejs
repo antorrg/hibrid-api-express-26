@@ -6,7 +6,8 @@
     <title>Error</title>
     <link rel="icon" href="/favicon.png">
     <script type="module" crossorigin src="<%= getAssetPath('scripts.js') %>"></script>
-    <link rel="stylesheet" crossorigin href="/index.css">
+     <link rel="stylesheet" crossorigin href="<%= getAssetPath('index.css') %>">
+    <meta http-equiv="refresh" content="5;url=/">
   </head>
   <body>
     <div class="backgroundPages" style="min-width:100vw; min-height: 100vh;">
@@ -18,11 +19,5 @@
         </div>
       </div>
     </div>
-
-    <script>
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 5000);
-    </script>
   </body>
 </html>
