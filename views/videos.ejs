@@ -18,7 +18,8 @@
             <strong class="mb-2 text-center">Título: <%= video.name %></strong>
             <div class="ratio ratio-16x9 w-100" style="max-width: 480px;">
               <iframe 
-                src="https://www.youtube.com/embed/<%= video.youTubeId || video.youtubeId %>" 
+                src="https://www.youtube.com/embed/<%= video.youTubeId || video.youtubeId %>"
+                referrerpolicy="strict-origin-when-cross-origin" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowfullscreen>
               </iframe>

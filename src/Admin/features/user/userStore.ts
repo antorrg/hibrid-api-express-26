@@ -120,7 +120,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     try {
       await userApi.changePassword(data);
       set({ isLoading: false });
-      toast.success('Contraseña actualizada correctamente');
+      toast.success('Contraseña actualizada correctamente. Inicie sesión nuevamente');
       return true;
     } catch (err: any) {
       const message = err?.message || 'Error al cambiar contraseña';

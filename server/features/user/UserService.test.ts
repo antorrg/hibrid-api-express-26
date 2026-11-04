@@ -49,11 +49,13 @@ const mockRepo = {
 }
 
 const mockHandleImageDelete = vi.fn()
+const mockHandleSessionInvalidation = vi.fn()
 
 function makeService() {
   return new UserService(
     mockRepo as unknown as IUserRepository,
-    mockHandleImageDelete
+    mockHandleImageDelete,
+    mockHandleSessionInvalidation
   )
 }
 
@@ -187,6 +189,7 @@ describe('UserService', () => {
       expect(Hasher.compare).toHaveBeenCalledWith('currentPassword123', VALID_HASH)
       expect(Hasher.hash).toHaveBeenCalledWith('newPassword456')
       expect(mockRepo.update).toHaveBeenCalledOnce()
+      expect(mockHandleSessionInvalidation).toHaveBeenCalledWith(user.toDTO().id)
       expect(result).not.toHaveProperty('password')
     })
 
@@ -234,6 +237,7 @@ describe('UserService', () => {
       const result = await service.upgradeUser(user.toDTO().id, { role: 'ADMIN', enabled: false })
 
       expect(mockRepo.update).toHaveBeenCalledOnce()
+      expect(mockHandleSessionInvalidation).toHaveBeenCalledWith(user.toDTO().id)
       expect(result.role).toBe('ADMIN')
       expect(result.enabled).toBe(false)
     })
@@ -271,6 +275,7 @@ describe('UserService', () => {
 
       expect(mockRepo.delete).toHaveBeenCalledWith(user.toDTO().id)
       expect(mockHandleImageDelete).toHaveBeenCalledWith('https://res.cloudinary.com/demo/image/upload/sample.jpg')
+      expect(mockHandleSessionInvalidation).toHaveBeenCalledWith(user.toDTO().id)
       expect(result).toBe('User with email: user@test.com deleted successfully')
     })
 
@@ -304,11 +309,13 @@ describe('UserService', () => {
       expect(result).not.toHaveProperty('password')
     })
 
-    it('should throw INVALID_CREDENTIALS if email does not exist', async() => {
+    it('should throw INVALID_CREDENTIALS and compare against cost 12 dummyHash if email does not exist', async() => {
       mockRepo.findByEmail.mockResolvedValue(null)
 
       await expect(service.login('notfound@test.com', 'password'))
         .rejects.toMatchObject({ code: ERROR_CODE.INVALID_CREDENTIALS })
+
+      expect(Hasher.compare).toHaveBeenCalledWith('password', '$2b$12$qWqMsTxUatfPNm.4AEa1i.tnvool.LUNqGQo1por50HNKOBVic2UC')
     })
 
     it('should throw ACCESS_BLOCKED if user is disabled', async() => {

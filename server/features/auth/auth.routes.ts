@@ -10,8 +10,8 @@ const skipRateLimitInTest = envConfig.Status === 'test'? true :false
 
 
 const loginFailedLimiter = createRateLimiter({
-  windowMs: 60* 1000,
-  limit: 1,
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
   skip: () => skipRateLimitInTest,
   skipSuccessfulRequests:true
 })

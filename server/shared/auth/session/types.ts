@@ -11,6 +11,7 @@ export interface ISessionAdapter {
   set(sid: string, defaults: DefaultFields): Promise<void>;
   touch(sid: string, expires: Date): Promise<void>;
   destroy(sid: string): Promise<void>;
+  destroyByUserId?(userId: string): Promise<void | number>;
   length(): Promise<number>;
   clearExpiredSessions(now?: Date): Promise<void>;
 }

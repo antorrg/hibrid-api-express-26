@@ -26,8 +26,12 @@ app.set('view engine', 'ejs')
 app.set('views', viewPath)
 
 if (envConfig.Status === 'production') {
-  app.use(express.static(path.resolve('dist')))
-  app.use(express.static(path.resolve('dist/assets')))
+  app.use('/assets', express.static(path.resolve('dist/assets'), { maxAge: '1y', immutable: true }))
+  app.use(express.static(path.resolve('public'), { maxAge: '1d' }))
+  app.get('/robots.txt', (_req, res) => {
+    res.type('text/plain')
+    res.sendFile(path.resolve('robots.txt'))
+  })
 } else {
   app.use(express.static(path.resolve('src')))
   app.use(express.static(path.resolve('public')))

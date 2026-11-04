@@ -2,7 +2,8 @@ import { type HelmetOptions } from 'helmet'
 import envConfig from './envConfig.js'
 
 const base: HelmetOptions = {
-  crossOriginResourcePolicy: { policy: 'cross-origin' }
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
 }
 
 export const helmetConfig: HelmetOptions =

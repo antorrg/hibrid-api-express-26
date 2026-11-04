@@ -1,6 +1,5 @@
 import express from 'express'
 import * as handler from '../features/frontPageRender/FrontPageRenderHandlers.js'
-import { ERROR_CODE, middError } from '../configs/errors.js'
 
 const mvcRoutes = express.Router()
 mvcRoutes.get('/', handler.getFrontPage)
@@ -32,7 +31,7 @@ mvcRoutes.get(
   handler.getReactPage
 )
 mvcRoutes.get(
-  '/admin', 
+  '/admin{/*splat}', 
   handler.getReactPage
 )
 

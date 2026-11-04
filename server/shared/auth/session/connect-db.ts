@@ -39,6 +39,16 @@ class ConnectDb implements ISessionAdapter {
     }
   }
 
+  async destroyByUserId(userId: string): Promise<number> {
+    return await this.sessionModel.destroy({
+      where: {
+        data: {
+          [Op.like]: `%"id":"${userId}"%`
+        }
+      }
+    })
+  }
+
   async length(): Promise<number> {
     return await this.sessionModel.count({
       where: {

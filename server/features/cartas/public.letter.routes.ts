@@ -22,16 +22,15 @@ const publicLetterRouter = express.Router()
 
 publicLetterRouter.post(
   '/',
+  letterLimiter,
   apiMiddleware.verifyApiKey,
-  //letterLimiter,
   Validator.validateBody(sch.createLetter),
   letterController.create
 )
 
 publicLetterRouter.get(
   '/',
-  //apiMiddleware.verifyApiKey,
-  //readLetterLimiter,
+  readLetterLimiter,
   Validator.validateQuery(sch.publicQuery),
   letterController.getAll
 )

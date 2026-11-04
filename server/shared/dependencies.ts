@@ -19,13 +19,18 @@ import { VideoRepository } from '../features/videos/VideoRepository.js'
 import { VideosService } from '../features/videos/VideosService.js'
 import { aboutParser, type IAbout, type IAboutCreate, type IAboutUpdate } from '../features/about/About.types.js'
 import { AboutService } from '../features/about/AboutService.js'
+import sessionAdapter from './auth/session/connect-db.js'
 
 export const imageRepository = new ImageRepository(Image)
 export const imageService = new ImageService(imageRepository, fileStorageService.deleteOldImage)
 export const imageDbService = imageService
 
 const userRepository = new UserRepository()
-export const userService = new UserService(userRepository, fileStorageService.deleteOldImage)
+export const userService = new UserService(
+  userRepository,
+  fileStorageService.deleteOldImage,
+  (userId: string) => sessionAdapter.destroyByUserId(userId)
+)
 
 const apiKeyRepository = new ApiKeyRepository(Client, ApiKey)
 export const apiKeyService = new ApiKeyService(apiKeyRepository, true)

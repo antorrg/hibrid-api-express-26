@@ -7,13 +7,16 @@ import { throwError, ERROR_CODE } from '../../configs/errors.js'
 export class UserService {
   private userRepository: IUserRepository
   private handleImageDelete: (url:string) => Promise<string | undefined>
+  private handleSessionInvalidation?: (userId: string) => Promise<void | number>
 
   constructor(
     userRepository: IUserRepository,
-    handleImageDelete: (url:string) => Promise<string | undefined>
+    handleImageDelete: (url:string) => Promise<string | undefined>,
+    handleSessionInvalidation?: (userId: string) => Promise<void | number>
   ) {
     this.userRepository = userRepository
-    this.handleImageDelete= handleImageDelete
+    this.handleImageDelete = handleImageDelete
+    this.handleSessionInvalidation = handleSessionInvalidation
   }
   private mapToPublic(record: IUser): IUser {
     return {
@@ -96,10 +99,11 @@ export class UserService {
 
     const newHashedPassword = await Hasher.hash(data.newPassword)
         
-        user!.changePassword(newHashedPassword)
+    user!.changePassword(newHashedPassword)
 
-        const updatedUser = await this.userRepository.update(data.id, user!)
-        return updatedUser
+    const updatedUser = await this.userRepository.update(data.id, user!)
+    await this.handleSessionInvalidation?.(data.id)
+    return updatedUser
   }
 
   /**
@@ -120,6 +124,7 @@ export class UserService {
     user!.changeUserScope(data.role, data.enabled)
 
     const updatedUser = await this.userRepository.update(userId, user!)
+    await this.handleSessionInvalidation?.(userId)
     return updatedUser
 
   }
@@ -136,6 +141,7 @@ export class UserService {
     const message = userForDelete.email
     await this.userRepository.delete(userId)
     await this.handleImageDelete(oldPictureUrl)
+    await this.handleSessionInvalidation?.(userId)
     return `User with email: ${message} deleted successfully`
   }
   /**
@@ -143,7 +149,7 @@ export class UserService {
      */
   async login(email: string, password: string): Promise<IUser> {
     const user = await this.userRepository.findByEmail(email)
-    const dummyHash = '$2b$10$e8W/Z63kP6V10M.0m8WpCeQ2w.U5O20vJ/5N/xXJ3xXJ3xXJ3xXJ'
+    const dummyHash = '$2b$12$qWqMsTxUatfPNm.4AEa1i.tnvool.LUNqGQo1por50HNKOBVic2UC'
 
     if (!user) {
       await Hasher.compare(password, dummyHash)
