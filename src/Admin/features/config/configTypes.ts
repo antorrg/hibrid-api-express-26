@@ -78,4 +78,4 @@ export interface LogFilterParams {
   order?: 'ASC' | 'DESC';
 }
 
-export type ConfigSubTab = 'clients' | 'apikeys' | 'logs';
+export type ConfigSubTab = 'clients' | 'apikeys' | 'logs' | 'letters';

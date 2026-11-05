@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { ClientsView } from './components/ClientsView';
 import { ApiKeysView } from './components/ApiKeysView';
 import { SystemLogsView } from './components/SystemLogsView';
+import { LetterView } from '../letters/LetterView';
 import type { ConfigSubTab } from './configTypes';
 
 const Config = () => {
@@ -12,7 +13,9 @@ const Config = () => {
   const queryParams = new URLSearchParams(location.search);
   const currentSub = queryParams.get('sub');
   const activeSubTab: ConfigSubTab =
-    currentSub === 'apikeys' || currentSub === 'logs' ? currentSub : 'clients';
+    currentSub === 'apikeys' || currentSub === 'logs' || currentSub === 'letters'
+      ? currentSub
+      : 'clients';
 
   const handleSubTabChange = (tab: ConfigSubTab) => {
     const params = new URLSearchParams(location.search);
@@ -65,6 +68,18 @@ const Config = () => {
           >
             📋 Registros (Logs)
           </button>
+
+          <button
+            type="button"
+            className={`btn btn-sm rounded-pill px-4 py-2 fw-semibold transition-all ${
+              activeSubTab === 'letters'
+                ? 'btn-primary shadow-sm'
+                : 'btn-light text-secondary border-0 bg-transparent'
+            }`}
+            onClick={() => handleSubTabChange('letters')}
+          >
+            ✉️ Cartas
+          </button>
         </div>
       </div>
 
@@ -73,6 +88,7 @@ const Config = () => {
         {activeSubTab === 'clients' && <ClientsView />}
         {activeSubTab === 'apikeys' && <ApiKeysView />}
         {activeSubTab === 'logs' && <SystemLogsView />}
+        {activeSubTab === 'letters' && <LetterView />}
       </div>
     </div>
   );
