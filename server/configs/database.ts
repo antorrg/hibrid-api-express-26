@@ -10,7 +10,7 @@ const sequelize = new Sequelize(envConfig.DatabaseUrl, {
   dialectOptions: envConfig.optionRender
     ? {
       ssl: {
-        require: true
+        rejectUnauthorized: false
       }
     }
     : {}
