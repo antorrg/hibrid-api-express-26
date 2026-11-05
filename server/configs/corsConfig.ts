@@ -71,6 +71,6 @@ export const publicApiCorsConfig: CorsOptions = {
     }
   },
   credentials: false, // Clientes externos usan API Keys, no cookies
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'x-api-key']
 }
