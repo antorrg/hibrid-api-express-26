@@ -6,7 +6,14 @@ import { userSeed } from '../features/user/userSeed.js'
 
 const sequelize = new Sequelize(envConfig.DatabaseUrl, {
   logging:false,
-  native:false
+  native:false,
+  dialectOptions: envConfig.optionRender
+    ? {
+      ssl: {
+        require: true
+      }
+    }
+    : {}
 })
 
 

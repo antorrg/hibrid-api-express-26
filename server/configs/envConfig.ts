@@ -55,6 +55,7 @@ const envConfig = {
   Port: getNumberEnv('PORT'),
   Status: NODE_ENV,
   DatabaseUrl: getStringEnv('DATABASE_URL'),
+  optionRender: process.env.NODE_ENV === 'production'? true : false,
   UserImg: getStringEnv('USER_IMG'),
   SessionSecret: getStringEnv('SESSION_SECRET'),
   Redirection: redirection,

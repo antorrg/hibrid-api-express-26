@@ -140,8 +140,8 @@ export class UserService {
     const oldPictureUrl = userForDelete.picture
     const message = userForDelete.email
     await this.userRepository.delete(userId)
-    await this.handleImageDelete(oldPictureUrl)
     await this.handleSessionInvalidation?.(userId)
+    await this.handleImageDelete(oldPictureUrl)
     return `User with email: ${message} deleted successfully`
   }
   /**

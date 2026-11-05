@@ -93,6 +93,7 @@ Todas las variables marcadas como obligatorias hacen que el servidor **no arranq
 | `WHATS_APP_NUMBER` | Sí | Número (con código de país, sin `+`) para el botón de WhatsApp |
 | `WHATS_APP_MESSAGE` | Sí | Mensaje inicial del enlace de WhatsApp |
 | `VITE_BASE_PATH` | Sí | URL pública base de la aplicación (ej.: `https://mi-dominio.com`). Se usa para armar enlaces en las vistas y se agrega a los orígenes permitidos por CORS |
+| `PUBLIC_API_1`, `PUBLIC_API_2`, ... | No | Orígenes permitidos dinámicamente para clientes externos que consumen la API pública (`/api/v1/extclients`) sin credenciales |
 | `COOKIE_SECURE` | No | En producción las cookies son `Secure` salvo que valga `false` |
 | `LOG_ERRORS` | No | `false` desactiva el log de errores del manejador central |
 
@@ -100,21 +101,40 @@ Todas las variables marcadas como obligatorias hacen que el servidor **no arranq
 
 El esquema vive en `server/models/` (modelos Sequelize explícitos) y se registra en `server/configs/database.ts`.
 
-Flujo de trabajo del proyecto:
+La estructura de migraciones y seeders se gestiona mediante `sequelize-cli` y está configurada en la raíz con `.sequelizerc`:
+- **Configuración:** `migrations/config/database.cjs` (resuelve variables de entorno según `NODE_ENV` y aplica SSL en producción).
+- **Migraciones:** `migrations/scripts/` (esquema versionado de la base de datos).
+- **Seeders:** `migrations/seeders/` (datos iniciales, como el usuario `OWNER`).
+- **Aislamiento CommonJS:** `migrations/package.json` contiene `{"type": "commonjs"}` para compatibilidad nativa con `sequelize-cli` sin interferir con el módulo ESM raíz.
 
-1. **Diseño inicial en local.** En `development`, `startUp(true)` ejecuta `sequelize.sync()` y el seed del usuario OWNER (a partir de `ADMIN_EMAIL`, `ADMIN_NAME`, `ADMIN_PASS` y `USER_IMG`). Pasar `startUp(true, true)` hace `force: true` y **borra todas las tablas**.
-2. **Congelar el esquema.** Una vez estable, el esquema se traslada a una migración inicial de `sequelize-cli` (junto con el seed del OWNER).
-3. **Cambios posteriores.** Toda modificación del esquema se hace con una migración nueva.
+### Identificadores UUID v7
+La aplicación y los seeders utilizan **UUID v7** (generados mediante `UuidHandler` / `uuid` v7), lo que garantiza orden temporal y un rendimiento óptimo de los índices B-Tree en PostgreSQL.
+
+### Flujo de trabajo y comandos
 
 ```bash
+# Ver estado de migraciones
+pnpm db:migrate:status
+
+# Ejecutar migraciones pendientes
+pnpm db:migrate
+
+# Revertir la última migración
+pnpm db:migrate:undo
+
+# Ejecutar seeders (crea el usuario OWNER si no existe)
+pnpm db:seed
+
+# Revertir seeders
+pnpm db:seed:undo
+
+# Crear una nueva migración
 pnpm dlx sequelize-cli migration:generate --name <descripcion>
-pnpm dlx sequelize-cli db:migrate
-pnpm dlx sequelize-cli db:migrate:undo        # revierte la última
 ```
 
-> `sequelize.sync()` está **deshabilitado en producción** por diseño (`NODE_ENV=production`): ahí el esquema solo cambia mediante migraciones. Ejecutar `db:migrate` antes de iniciar la nueva versión.
+> `sequelize.sync()` está **deshabilitado en producción** por diseño (`NODE_ENV=production`): el esquema solo cambia mediante migraciones. Ejecutar `pnpm db:migrate && pnpm db:seed` antes de iniciar la nueva versión.
 
-Tablas: `users`, `sessions`, `logs`, `images`, `front_page`, `about`, `product`, `variant_product`, `video_group`, `video`, `Client`, `api_key`, `letters`.
+Tablas (13): `users`, `sessions`, `logs`, `images`, `front_page`, `about`, `product`, `variant_product`, `video_group`, `video`, `Client`, `api_key`, `letters`.
 
 ## Scripts
 
@@ -128,6 +148,11 @@ Tablas: `users`, `sessions`, `logs`, `images`, `front_page`, `about`, `product`,
 | `pnpm test` | Todos los tests (`NODE_ENV=test`) |
 | `pnpm test:unit` | Solo unitarios |
 | `pnpm test:integration` | Solo integración (requiere PostgreSQL de test) |
+| `pnpm db:migrate` | Ejecuta las migraciones pendientes con `sequelize-cli` |
+| `pnpm db:migrate:status` | Consulta el estado de las migraciones ejecutadas/pendientes |
+| `pnpm db:migrate:undo` | Revierte la última migración aplicada |
+| `pnpm db:seed` | Ejecuta todos los seeders configurados (`migrations/seeders/`) |
+| `pnpm db:seed:undo` | Revierte los datos sembrados por los seeders |
 
 ## Estructura del proyecto
 
@@ -353,13 +378,13 @@ Las pruebas de integración usan `startUp(true, true)`: **recrean las tablas** d
 
 1. Configurar todas las variables de entorno del proveedor (ver tabla). `NODE_ENV=production` lo fija el script `start`; `VITE_BASE_PATH` debe ser la URL pública con `https`.
 2. **Build:** `pnpm install --frozen-lockfile && pnpm build` (necesita las devDependencies: Vite y TypeScript).
-3. **Migraciones:** `pnpm dlx sequelize-cli db:migrate` contra la base de producción antes de iniciar.
+3. **Migraciones y Seed:** `pnpm db:migrate && pnpm db:seed` contra la base de producción antes de iniciar.
 4. **Inicio:** `pnpm start`.
 5. Verificar:
    - La base ya tiene el usuario OWNER (seed) y se puede iniciar sesión en `/login`.
    - Las cookies llegan con `Secure`: requiere HTTPS y que el proxy envíe `X-Forwarded-Proto`.
    - Las reglas de Firebase Storage permiten las operaciones que realiza el servidor sobre `imagesApi/`.
-   - El origen del frontend externo figura en `corsConfig.ts`.
+   - Los orígenes de los clientes externos están configurados con `PUBLIC_API_1`, `PUBLIC_API_2`, etc.
    - Existe al menos una portada, un "acerca" y un producto cargados desde el panel.
 
 ---
