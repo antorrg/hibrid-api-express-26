@@ -11,7 +11,6 @@ export const helmetConfig: HelmetOptions =
     ? {
       ...base,
       contentSecurityPolicy: {
-        upgradeInsecureRequests: [],
         reportOnly: false, // pasalo a false cuando la consola del navegador no muestre violaciones
         directives: {
           defaultSrc: ["'self'"],
