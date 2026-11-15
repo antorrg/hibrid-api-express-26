@@ -65,14 +65,11 @@ const envConfig = {
   AdminUserPass: getStringEnv('ADMIN_PASS'),
   // FileStorageService
   BaseTestUrl: getStringEnv('BASE_TEST_URL'),
-  //Firebase service:
-  FireApiK:getStringEnv('API_KEY'),
-  FireAppId: getStringEnv('APP_ID'),
+  //Firebase Admin service:
   FirePId: getStringEnv('PROJECT_ID'),
-  FireDomain: getStringEnv('AUTH_DOMAIN'),
   FireStoreBuck: getStringEnv('STORAGE_BUCKET'),
-  FireMess : getStringEnv('MESSAGIN_SEND_ID'),
-  FireMeasure: getStringEnv('MEASUREMENT_ID'),
+  FireClientEmail: getStringEnv('FIREBASE_CLIENT_EMAIL'),
+  FirePrivateKey: getStringEnv('FIREBASE_PRIVATE_KEY').replace(/\\n/g, '\n'),
   // Node-mailer
   GmailUser: getStringEnv('GMAIL_USER'),
   GmailPass: getStringEnv('GMAIL_PASSWORD'),

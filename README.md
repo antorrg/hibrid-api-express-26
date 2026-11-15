@@ -87,7 +87,7 @@ Todas las variables marcadas como obligatorias hacen que el servidor **no arranq
 | `ADMIN_EMAIL` | Sí | Email del usuario OWNER inicial |
 | `ADMIN_NAME` | Sí | Nombre del usuario OWNER inicial |
 | `ADMIN_PASS` | Sí | Contraseña del usuario OWNER inicial |
-| `API_KEY`, `APP_ID`, `AUTH_DOMAIN`, `MEASUREMENT_ID`, `MESSAGIN_SEND_ID`, `PROJECT_ID`, `STORAGE_BUCKET` | Sí | Configuración de Firebase. Aunque solo se use en producción, el servidor las exige siempre |
+| `PROJECT_ID`, `STORAGE_BUCKET`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Sí | Credenciales de cuenta de servicio de Firebase Admin (`firebase-admin`) para Storage. Aunque solo se use en producción, el servidor las exige siempre |
 | `GMAIL_USER` | Sí | Cuenta de Gmail que envía y recibe los mensajes de contacto |
 | `GMAIL_PASSWORD` | Sí | Contraseña de aplicación de Gmail |
 | `WHATS_APP_NUMBER` | Sí | Número (con código de país, sin `+`) para el botón de WhatsApp |
@@ -383,7 +383,7 @@ Las pruebas de integración usan `startUp(true, true)`: **recrean las tablas** d
 5. Verificar:
    - La base ya tiene el usuario OWNER (seed) y se puede iniciar sesión en `/login`.
    - Las cookies llegan con `Secure`: requiere HTTPS y que el proxy envíe `X-Forwarded-Proto`.
-   - Las reglas de Firebase Storage permiten las operaciones que realiza el servidor sobre `imagesApi/`.
+   - La cuenta de servicio de Firebase Admin está configurada correctamente para gestionar `imagesApi/` en Firebase Storage (las reglas de escritura pública en Storage pueden permanecer cerradas: `allow read: if true; allow write: if false;`).
    - Los orígenes de los clientes externos están configurados con `PUBLIC_API_1`, `PUBLIC_API_2`, etc.
    - Existe al menos una portada, un "acerca" y un producto cargados desde el panel.
 

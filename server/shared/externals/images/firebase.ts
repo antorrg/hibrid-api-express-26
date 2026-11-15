@@ -1,40 +1,48 @@
 import envConfig from '../../../configs/envConfig.js'
 import { ERROR_CODE, throwError } from '../../../configs/errors.js'
 import { type UploadedImageFile } from '../../interfaces/base.interface.js'
-import { initializeApp } from 'firebase/app'
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
+import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app'
+import { getStorage, getDownloadURL } from 'firebase-admin/storage'
 
-export const firebaseConfig = {
-  apiKey: envConfig.FireApiK,
-  authDomain: envConfig.FireDomain,
-  projectId: envConfig.FirePId,
-  storageBucket: envConfig.FireStoreBuck,
-  messagingSenderId: envConfig.FireMess,
-  appId: envConfig.FireAppId,
-  measurementId: envConfig.FireMeasure
+const getStorageBucket = () => {
+  const app = getApps().length > 0
+    ? getApp()
+    : initializeApp({
+      credential: cert({
+        projectId: envConfig.FirePId,
+        clientEmail: envConfig.FireClientEmail,
+        privateKey: envConfig.FirePrivateKey
+      }),
+      storageBucket: envConfig.FireStoreBuck
+    })
+
+  return getStorage(app).bucket()
 }
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-const storage = getStorage(app)
 
 // Funciones de subida y borrado de imagenes:
 
 const uploadImageToFirebase = async(file: UploadedImageFile) => {
   try {
+    const bucket = getStorageBucket()
+
     // Prefijo compacto único (timestamp base36, ~8 chars) para evitar colisiones sin inflar la URL
     const compactPrefix = Date.now().toString(36)
     const sanitizedFilename = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_')
     const fileName = `${compactPrefix}-${sanitizedFilename}`
 
-    // Crear una referencia de almacenamiento con el nombre del archivo
-    const storageRef = ref(storage, `imagesApi/${fileName}`)
+    // Crear una referencia al archivo en Firebase Storage
+    const fileRef = bucket.file(`imagesApi/${fileName}`)
 
     // Subir el archivo a Firebase Storage
-    await uploadBytes(storageRef, file.buffer)
+    await fileRef.save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype
+      },
+      resumable: false
+    })
 
-    // Obtener la URL de descarga
-    const downloadURL = await getDownloadURL(storageRef)
+    // Obtener la URL de descarga pública con token
+    const downloadURL = await getDownloadURL(fileRef)
 
     return downloadURL
   } catch (error) {
@@ -45,14 +53,16 @@ const uploadImageToFirebase = async(file: UploadedImageFile) => {
 
 const deleteImageFromStorage = async(imageUrl: string) => {
   try {
+    const bucket = getStorageBucket()
+
     // Extrae la ruta relativa del archivo desde la URL completa
     const bucketBaseUrl = 'https://firebasestorage.googleapis.com/v0/b/'
-    const storageBucket = storage.app.options.storageBucket
-    
+    const storageBucket = envConfig.FireStoreBuck
+
     if (!imageUrl.startsWith(`${bucketBaseUrl}${storageBucket}`)) {
       throw new Error('La URL no pertenece al bucket de Firebase configurado.')
     }
-    
+
     const filePath = decodeURIComponent(
       imageUrl
         .replace(`${bucketBaseUrl}${storageBucket}/o/`, '')
@@ -60,23 +70,19 @@ const deleteImageFromStorage = async(imageUrl: string) => {
     )
 
     // Crea una referencia al archivo en Firebase Storage
-    const fileRef = ref(storage, filePath)
+    const fileRef = bucket.file(filePath)
 
-    // Elimina el archivo
-    await deleteObject(fileRef)
+    // Elimina el archivo (ignoreNotFound asegura idempotencia si ya fue borrado)
+    await fileRef.delete({ ignoreNotFound: true })
     console.log(`Imagen eliminada correctamente: ${filePath}`)
     return 'Imagen eliminada correctamente'
-  } catch (error: any) {
-    // Idempotencia: si el archivo ya no existe en el storage, se considera eliminado con éxito
-    if (error?.code === 'storage/object-not-found') {
-      return 'Imagen ya eliminada o no existente'
-    }
+  } catch (error: unknown) {
     console.error('Error al eliminar la imagen:', error)
     throwError(ERROR_CODE.OPERATION_FAILED, `Error al eliminar imagen: ${imageUrl}`)
   }
 }
 
-export { 
+export {
   uploadImageToFirebase,
-  deleteImageFromStorage 
+  deleteImageFromStorage
 }

@@ -12,9 +12,18 @@ export default defineConfig({
         test: {
           name: 'unit',
           include: ['server/**/*.test.ts'],
-          exclude: ['**/*.integration.test.ts', 'tests/integration/**'],
+          exclude: ['**/*.integration.test.ts', '**/*.firebase.test.ts', 'tests/integration/**'],
           environment: 'node',
           globals: true
+        }
+      },
+      {
+        test: {
+          name: 'firebase',
+          include: ['server/**/*.firebase.test.ts'],
+          environment: 'node',
+          globals: true,
+          fileParallelism: false
         }
       },
       {
