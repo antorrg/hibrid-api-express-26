@@ -5,7 +5,7 @@
     background-image: url('/imagenBack2.webp');
     background-size: cover;
     background-position: center;
-    min-width: 100vw;
+    width: 100%;
     height: 100vh;
     display: flex;
     justify-content: flex-start;
@@ -13,29 +13,31 @@
   }
 </style>
 
-<section class="container-fluid" id="background-section">
+<section class="" id="background-section">
   <div class="container-caption">
     <div class="caption-title ms-5">
       <h1><%= frontPage.title %></h1>
       <p class="lead"><%= frontPage.description %></p>
       <p class="lead">
-        <a class="btn btn-lg btn-dark fw-bold" href="/detalles">Ver proyectos:</a>
+        <a class="btn btn-lg btn-dark fw-bold" href="/detalles">Ver productos</a>
       </p>
     </div>
   </div>
 </section>
 
-<section class="container marketing mt-4 ms-4 mb-3">
-  <h2 class="h2 fw-normal mb-3">Proyectos realizados:</h2>
-  <div class="row">
+<section class="container marketing mb-3">
+  <h2 class="h2 fw-normal mb-2 mt-2">Productos</h2>
+  <div class="row g-3">
     <% products.forEach(function(inf) { %>
-      <div class="col-lg-4 backgroundElements mb-3">
-        <img src="<%= inf.logo %>" class="bd-placeholder-img rounded-circle mt-3" width="70" height="70" alt="Placeholder">
-        <h3 class="h2 fw-normal"><%= inf.title %></h3>
-        <p><%= inf.infoHeader %></p>
-        <p>
-          <a class="btn btn-sm btn-outline-primary" href="/detalles/<%= inf.id %>">Ver detalles &raquo;</a>
-        </p>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="backgroundElements h-100">
+          <img src="<%= inf.logo %>" class="bd-placeholder-img rounded-circle mt-2 mb-1" width="70" height="70" alt="Placeholder">
+          <h4 class="h4 fw-normal"><%= inf.title %></h4>
+          <p class="fw-normal"><%= inf.info_header %></p>
+          <p>
+            <a class="btn btn-sm btn-outline-primary" href="/detalles/<%= inf.id %>">Ver detalles &raquo;</a>
+          </p>
+        </div>
       </div>
     <% }); %>
   </div>

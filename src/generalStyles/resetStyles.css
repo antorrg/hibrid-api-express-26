@@ -2,7 +2,7 @@
 :root,
 [data-bs-theme=light] {
   --bs-primary: #008c9e !important;
-  --bs-secondary: #6c757d !important;
+  --bs-secondary: hsl(208, 7%, 46%) !important;
   --bs-primary-text-emphasis: #024149 !important;
   --bs-secondary-text-emphasis: #2b2f32 !important;
   --bs-primary-border-subtle: #9eeaf5 !important;
@@ -12,6 +12,7 @@
 }
 [data-bs-theme=dark] {
   --bs-primary-border-subtle: #054851 !important;
+  --bs-secondary: hsl(208, 20%, 80%) !important;
   --bs-secondary-border-subtle: #41464b !important;
   --bs-tertiary-bg:hsla(211, 51%, 11%, 0.5)!important;
   --ar-background-image: url("https://firebasestorage.googleapis.com/v0/b/misitioweb-d59d3.appspot.com/o/imagesApi%2Fbackground-dark.webp?alt=media&token=8880fd28-c185-4f4d-bfa2-7d4bd6516de4");
@@ -56,6 +57,11 @@
 }
 .backgroundElements {
   background-color: var(--bs-tertiary-bg);
+}
+.marketing .backgroundElements {
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  padding: 0.8rem;
 }
 [data-bs-theme="light"] .coverBack {
   margin-top:0;
@@ -382,8 +388,8 @@ min-width: 80vw;
 }
 
 .btn-outline-secondary {
-  --bs-btn-color: #6c757d;
-  --bs-btn-border-color: #6c757d;
+  --bs-btn-color: var(--bs-secondary);
+  --bs-btn-border-color: var(--bs-secondary); /*#6c757d; */
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: #6c757d;
   --bs-btn-hover-border-color: #6c757d;

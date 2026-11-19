@@ -36,7 +36,7 @@ export class ProductRepository implements IProductRepository {
       SELECT id, title, logo, picture, url, "isAlive", info_header, info_body
       FROM "${this.productModel.tableName}"
       WHERE enabled = true
-      ORDER BY "createdAt" DESC
+      ORDER BY "createdAt" ASC
     `, {
       type: QueryTypes.SELECT
     })
